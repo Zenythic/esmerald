@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48">
+  <!-- Monograma Z -->
+  <g>
+    <rect x="0" y="0" width="48" height="48" fill="none"/>
+    <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  </g>
+  <!-- Wordmark ZENYTHIC -->
+  <text x="60" y="32" font-family="Manrope, Inter, system-ui, sans-serif" font-size="22" font-weight="700" letter-spacing="3" fill="#0F0F12">ZENYTHIC</text>
+</svg>

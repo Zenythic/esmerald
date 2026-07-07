@@ -1,0 +1,75 @@
+---
+// Splash de carga unificado de Zenythic.
+// Se muestra antes de cualquier juego. ~2.5s. Refuerza marca + da tiempo a precargar.
+export interface Props {
+  /** Nombre del juego que se está cargando. */
+  gameName?: string;
+}
+const { gameName } = Astro.props;
+---
+
+<div id="zy-splash" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ink-900 transition-opacity duration-500">
+  <!-- Línea dorada superior -->
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-400/70 to-transparent"></div>
+
+  <!-- Monograma Z con animación de trazo -->
+  <div class="relative">
+    <svg viewBox="0 0 120 120" width="96" height="96" class="zy-logo">
+      <path
+        d="M26 30 H94 L34 90 H94"
+        fill="none"
+        stroke="#C9A961"
+        stroke-width="4"
+        stroke-linecap="square"
+        stroke-linejoin="miter"
+        pathLength="100"
+      />
+    </svg>
+  </div>
+
+  <!-- Wordmark -->
+  <div class="mt-6 text-center">
+    <div class="text-xl font-extrabold tracking-[0.35em] text-white">ZENYTHIC</div>
+    {gameName && (
+      <div class="mt-2 text-xs font-medium uppercase tracking-widest text-gold-400">{gameName}</div>
+    )}
+  </div>
+
+  <!-- Barra de carga -->
+  <div class="mt-8 w-40 h-px bg-ink-700 overflow-hidden">
+    <div class="zy-bar h-full bg-gold-400" style="width:0%"></div>
+  </div>
+</div>
+
+<style>
+  .zy-logo path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: zy-draw 1.4s ease-out 0.2s forwards;
+  }
+  @keyframes zy-draw {
+    to { stroke-dashoffset: 0; }
+  }
+  .zy-bar {
+    animation: zy-load 2.3s ease-in-out 0.3s forwards;
+  }
+  @keyframes zy-load {
+    0% { width: 0%; }
+    70% { width: 80%; }
+    100% { width: 100%; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // Tras ~2.5s, desvanece y elimina el splash.
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('zy-splash');
+        if (!splash) return;
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 550);
+      }, 2500);
+    });
+  })();
+</script>

@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.astro/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Windows
+*.ps1

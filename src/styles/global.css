@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Zenythic — estilos base ===== */
+@layer base {
+  :root {
+    --gold: 201 169 97; /* #C9A961 */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-white text-ink-800 font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  ::selection {
+    @apply bg-gold-200 text-ink-900;
+  }
+}
+
+@layer components {
+  /* Contenedor central */
+  .container-z {
+    @apply mx-auto w-full max-w-content px-6 md:px-8;
+  }
+
+  /* Eyebrow / kicker en dorado */
+  .kicker {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest2 text-gold-600;
+  }
+  .kicker::before {
+    content: '';
+    @apply inline-block h-px w-8 bg-gold-400;
+  }
+
+  /* Línea dorada decorativa */
+  .hairline-gold {
+    @apply block h-px w-full bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-60;
+  }
+
+  /* Botones */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-ink-900 text-white hover:bg-ink-700;
+  }
+  .btn-gold {
+    @apply btn border border-gold-400 bg-gold-400 text-ink-900 hover:bg-gold-300 hover:border-gold-300;
+  }
+  .btn-ghost {
+    @apply btn border border-ink-200 bg-transparent text-ink-800 hover:border-gold-400 hover:text-gold-600;
+  }
+
+  /* Link con underline dorado animado */
+  .link-z {
+    @apply relative inline-block text-ink-700 transition-colors hover:text-ink-900;
+  }
+  .link-z::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 h-px w-0 bg-gold-400 transition-all duration-300;
+  }
+  .link-z:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Entrada suave al hacer scroll */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}

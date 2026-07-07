@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#0F0F12"/>
+  <!-- Monograma Z con trazo dorado -->
+  <path d="M18 18 H46 L22 46 H46" fill="none" stroke="#C9A961" stroke-width="3.5" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>

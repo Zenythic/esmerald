@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Zenythic — Proveedor de juegos de casino",
+    "description": "El próximo estándar en juegos de casino. Tecnología, mini-games y juego responsble para operadores de todo el mundo."
+  },
+  "nav": {
+    "games": "Juegos",
+    "company": "Compañía",
+    "technology": "Tecnología",
+    "partners": "Socios",
+    "contact": "Hablemos",
+    "langLabel": "ES"
+  },
+  "hero": {
+    "kicker": "Proveedor de juegos de casino",
+    "title": "El próximo estándar en juegos de casino",
+    "subtitle": "Construimos mini-games y experiencias de juego rápidas, justas y mobile-first. Una sola API para integrar un catálogo completo en tu plataforma.",
+    "ctaPrimary": "Ver juegos",
+    "ctaSecondary": "Hablar con ventas",
+    "badge": "Provably Fair · Mobile-first · Integración en 48h"
+  },
+  "trust": {
+    "title": "Construido para operadores que no aceptan compromisos",
+    "games": "Juegos en catálogo",
+    "gamesValue": "+50",
+    "markets": "Mercados activos",
+    "marketsValue": "+15",
+    "uptime": "Disponibilidad",
+    "uptimeValue": "99.9%",
+    "integration": "Tiempo de integración",
+    "integrationValue": "48h"
+  },
+  "games": {
+    "kicker": "Catálogo",
+    "title": "Juegos diseñados para retener",
+    "subtitle": "Una selección de nuestros títulos. El catálogo completo se revela pronto.",
+    "soon": "Próximamente",
+    "cta": "Explorar el catálogo completo"
+  },
+  "features": {
+    "kicker": "Por qué Zenythic",
+    "title": "Una plataforma construida para escalar",
+    "subtitle": "Cada decisión técnica está pensada para que tu operación crezca sin fricción.",
+    "items": {
+      "fair": {
+        "title": "Provably Fair",
+        "desc": "Aleatoriedad verificable y transparente en cada ronda. Confianza por diseño."
+      },
+      "mobile": {
+        "title": "Mobile-first",
+        "desc": "Renderizado ligero y responsivo. La misma fluidez en cualquier dispositivo."
+      },
+      "i18n": {
+        "title": "Multi-idioma",
+        "desc": "Localización nativa, monedas y formato regional sin esfuerzo."
+      },
+      "integration": {
+        "title": "Integración en 48h",
+        "desc": "Una API limpia y documentación clara. De cero a producción en dos días."
+      },
+      "compliance": {
+        "title": "Cumplimiento",
+        "desc": "Diseñado bajo estándares de juego responsable y control de jurisdicciones."
+      },
+      "support": {
+        "title": "Soporte 24/7",
+        "desc": "Equipo dedicado de integración y operaciones, siempre disponible."
+      }
+    }
+  },
+  "solutions": {
+    "kicker": "Soluciones",
+    "title": "Todo lo que tu operación necesita",
+    "subtitle": "Un único partner para el catálogo, la integración y el control.",
+    "items": {
+      "catalog": {
+        "title": "Catálogo de juegos",
+        "desc": "Mini-games, crash y títulos originales Zenythic. Actualizaciones continuas."
+      },
+      "api": {
+        "title": "API de integración",
+        "desc": "Conecta tu plataforma con un único endpoint REST bien documentado."
+      },
+      "backoffice": {
+        "title": "Back-office",
+        "desc": "Control total: jugadores, sesiones, reportes y configuración en tiempo real."
+      },
+      "analytics": {
+        "title": "Analítica",
+        "desc": "Métricas de rendimiento, retención y revenue por juego y mercado."
+      }
+    }
+  },
+  "tech": {
+    "kicker": "Tecnología",
+    "title": "Una API. Integración sin fricción.",
+    "subtitle": "Diseñamos la integración para que tu equipo técnico la ame: limpia, predecible y rápida.",
+    "points": {
+      "iframe": "Monta cada juego con un iframe firmado y seguro.",
+      "sdk": "SDK para web y móvil con tipos incluidos.",
+      "webhook": "Webhooks en tiempo real para cada evento relevante.",
+      "sandbox": "Entorno sandbox con datos de prueba ilimitados."
+    },
+    "cta": "Ver documentación"
+  },
+  "cta": {
+    "kicker": "Socios",
+    "title": "Conviértete en socio Zenythic",
+    "subtitle": "Hablemos sobre cómo llevar el próximo estándar de juegos a tu plataforma.",
+    "button": "Solicitar demo",
+    "secondary": "Escríbenos"
+  },
+  "footer": {
+    "tagline": "El próximo estándar en juegos de casino.",
+    "explore": "Explorar",
+    "company": "Compañía",
+    "legal": "Legal",
+    "rights": "Todos los derechos reservados.",
+    "links": {
+      "about": "Sobre nosotros",
+      "careers": "Carreras",
+      "press": "Prensa",
+      "terms": "Términos",
+      "privacy": "Privacidad",
+      "responsible": "Juego responsable"
+    },
+    "disclaimer": "Zenythic es un proveedor B2B de juegos para operadores con licencia. Jugar con moderación. +18."
+  }
+}

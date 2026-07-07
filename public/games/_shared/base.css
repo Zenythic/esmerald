@@ -1,0 +1,215 @@
+/* ===== Zenythic — Base de juegos =====
+   Reset + tokens de marca + utilidades comunes. Importado por todos los juegos. */
+
+:root {
+  --ink-50: #f6f6f8;
+  --ink-100: #efeef2;
+  --ink-200: #e2e2e8;
+  --ink-300: #c9c9d2;
+  --ink-400: #9a9aa6;
+  --ink-500: #5a5a66;
+  --ink-600: #3d3d47;
+  --ink-700: #2a2a32;
+  --ink-800: #1a1a1f;
+  --ink-900: #0f0f12;
+
+  --gold-300: #dcc36e;
+  --gold-400: #c9a961;
+  --gold-500: #b89248;
+  --gold-600: #9a7a38;
+
+  --felt: #0f2a22;     /* verde mesa oscuro, opcional */
+  --felt-light: #16382e;
+
+  --radius: 0px;       /* Zenythic = esquinas rectas */
+  --font: 'Manrope', 'Inter', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink-800);
+  background: var(--ink-900);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---- Splash de carga ---- */
+.zy-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ink-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.45s ease;
+}
+.zy-splash--leaving {
+  opacity: 0;
+}
+.zy-splash__inner {
+  text-align: center;
+}
+.zy-splash__mark {
+  margin: 0 auto 1.5rem;
+  display: block;
+}
+.zy-splash__z {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: zy-draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@keyframes zy-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.zy-splash__wordmark {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 0.4em;
+  opacity: 0;
+  animation: zy-fade 0.8s ease 0.5s forwards;
+}
+@keyframes zy-fade {
+  to {
+    opacity: 1;
+  }
+}
+.zy-splash__bar {
+  width: 220px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 1.5rem auto 0.75rem;
+  overflow: hidden;
+}
+.zy-splash__fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-300));
+}
+.zy-splash__hint {
+  color: var(--ink-400);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* ---- Carta estándar ---- */
+.zy-card {
+  width: 64px;
+  height: 92px;
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.zy-card--red {
+  color: #c0392b;
+}
+.zy-card--black {
+  color: var(--ink-900);
+}
+.zy-card__rank {
+  font-size: 1rem;
+  line-height: 1;
+}
+.zy-card__suit {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.zy-card__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.6rem;
+}
+.zy-card--back {
+  background: linear-gradient(135deg, var(--ink-800), var(--ink-900));
+  border-color: var(--gold-600);
+}
+.zy-card--back::after {
+  content: 'Z';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-400);
+  font-weight: 800;
+  font-size: 1.4rem;
+  opacity: 0.5;
+}
+.zy-card--enter {
+  animation: zy-deal 0.4s ease;
+}
+@keyframes zy-deal {
+  from {
+    transform: translateY(-30px) rotate(-6deg);
+    opacity: 0;
+  }
+}
+
+/* ---- Botones ---- */
+.zy-btn {
+  border: 1px solid var(--ink-300);
+  background: transparent;
+  color: var(--ink-800);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+.zy-btn:hover:not(:disabled) {
+  border-color: var(--gold-400);
+  color: var(--gold-600);
+}
+.zy-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.zy-btn--gold {
+  background: var(--gold-400);
+  border-color: var(--gold-400);
+  color: var(--ink-900);
+}
+.zy-btn--gold:hover:not(:disabled) {
+  background: var(--gold-300);
+  border-color: var(--gold-300);
+  color: var(--ink-900);
+}
+.zy-btn--dark {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: #fff;
+}

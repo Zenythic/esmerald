@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Zenythic — Casino games provider",
+    "description": "The next standard in casino gaming. Technology, mini-games and responsible play for operators worldwide."
+  },
+  "nav": {
+    "games": "Games",
+    "company": "Company",
+    "technology": "Technology",
+    "partners": "Partners",
+    "contact": "Let's talk",
+    "langLabel": "EN"
+  },
+  "hero": {
+    "kicker": "Casino games provider",
+    "title": "The next standard in casino gaming",
+    "subtitle": "We build fast, fair and mobile-first mini-games and gaming experiences. A single API to integrate a full catalogue into your platform.",
+    "ctaPrimary": "View games",
+    "ctaSecondary": "Talk to sales",
+    "badge": "Provably Fair · Mobile-first · 48h integration"
+  },
+  "trust": {
+    "title": "Built for operators who accept no compromises",
+    "games": "Games in catalogue",
+    "gamesValue": "+50",
+    "markets": "Active markets",
+    "marketsValue": "+15",
+    "uptime": "Uptime",
+    "uptimeValue": "99.9%",
+    "integration": "Integration time",
+    "integrationValue": "48h"
+  },
+  "games": {
+    "kicker": "Catalogue",
+    "title": "Games built to retain",
+    "subtitle": "A selection of our titles. The full catalogue is coming soon.",
+    "soon": "Coming soon",
+    "cta": "Explore the full catalogue"
+  },
+  "features": {
+    "kicker": "Why Zenythic",
+    "title": "A platform built to scale",
+    "subtitle": "Every technical decision is made so your operation grows without friction.",
+    "items": {
+      "fair": {
+        "title": "Provably Fair",
+        "desc": "Verifiable, transparent randomness on every round. Trust by design."
+      },
+      "mobile": {
+        "title": "Mobile-first",
+        "desc": "Lightweight, responsive rendering. The same fluidity on any device."
+      },
+      "i18n": {
+        "title": "Multi-language",
+        "desc": "Native localisation, currencies and regional formats, effortlessly."
+      },
+      "integration": {
+        "title": "48h integration",
+        "desc": "A clean API and clear documentation. From zero to production in two days."
+      },
+      "compliance": {
+        "title": "Compliance",
+        "desc": "Built under responsible gaming standards and jurisdiction control."
+      },
+      "support": {
+        "title": "24/7 support",
+        "desc": "A dedicated integration and operations team, always available."
+      }
+    }
+  },
+  "solutions": {
+    "kicker": "Solutions",
+    "title": "Everything your operation needs",
+    "subtitle": "A single partner for the catalogue, the integration and the control.",
+    "items": {
+      "catalog": {
+        "title": "Games catalogue",
+        "desc": "Mini-games, crash and original Zenythic titles. Continuous updates."
+      },
+      "api": {
+        "title": "Integration API",
+        "desc": "Connect your platform with a single, well-documented REST endpoint."
+      },
+      "backoffice": {
+        "title": "Back-office",
+        "desc": "Full control: players, sessions, reports and real-time configuration."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "desc": "Performance, retention and revenue metrics per game and market."
+      }
+    }
+  },
+  "tech": {
+    "kicker": "Technology",
+    "title": "One API. Frictionless integration.",
+    "subtitle": "We designed integration so your engineering team loves it: clean, predictable and fast.",
+    "points": {
+      "iframe": "Mount each game with a signed, secure iframe.",
+      "sdk": "Web and mobile SDK with included types.",
+      "webhook": "Real-time webhooks for every relevant event.",
+      "sandbox": "Sandbox environment with unlimited test data."
+    },
+    "cta": "View documentation"
+  },
+  "cta": {
+    "kicker": "Partners",
+    "title": "Become a Zenythic partner",
+    "subtitle": "Let's talk about bringing the next standard in gaming to your platform.",
+    "button": "Request a demo",
+    "secondary": "Write to us"
+  },
+  "footer": {
+    "tagline": "The next standard in casino gaming.",
+    "explore": "Explore",
+    "company": "Company",
+    "legal": "Legal",
+    "rights": "All rights reserved.",
+    "links": {
+      "about": "About us",
+      "careers": "Careers",
+      "press": "Press",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "responsible": "Responsible gaming"
+    },
+    "disclaimer": "Zenythic is a B2B games provider for licensed operators. Play responsibly. +18."
+  }
+}

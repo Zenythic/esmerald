@@ -1,0 +1,72 @@
+---
+import { getLangFromUrl, useTranslations, getLocalisedPath, languages, type Lang } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const links = [
+  { href: '#games', label: t('nav.games') },
+  { href: '#features', label: t('nav.company') },
+  { href: '#technology', label: t('nav.technology') },
+  { href: '#contact', label: t('nav.partners') },
+];
+
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+const otherPath = getLocalisedPath(Astro.url, otherLang);
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-ink-100">
+  <nav class="container-z flex h-16 items-center justify-between">
+    <!-- Logo -->
+    <a href={lang === 'es' ? '/' : '/en'} class="flex items-center gap-3" aria-label="Zenythic">
+      <svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true">
+        <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+      </svg>
+      <span class="text-lg font-extrabold tracking-widest2 text-ink-900">ZENYTHIC</span>
+    </a>
+
+    <!-- Nav desktop -->
+    <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
+      {links.map((l) => (
+        <li><a href={l.href} class="link-z">{l.label}</a></li>
+      ))}
+    </ul>
+
+    <!-- Acciones -->
+    <div class="flex items-center gap-3">
+      <a
+        href={otherPath}
+        class="text-xs font-semibold tracking-widest2 text-ink-500 hover:text-gold-600 transition-colors border border-ink-200 hover:border-gold-400 px-3 py-1.5"
+      >
+        {languages[otherLang].toUpperCase()}
+      </a>
+      <a href="#contact" class="btn-gold !py-2 !px-4 hidden sm:inline-flex">{t('nav.contact')}</a>
+
+      <!-- Toggle móvil -->
+      <button id="menu-toggle" class="md:hidden p-2 text-ink-800" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-ink-100 bg-white">
+    <ul class="container-z py-4 flex flex-col gap-3 text-sm font-medium text-ink-700">
+      {links.map((l) => (
+        <li><a href={l.href} class="block py-2">{l.label}</a></li>
+      ))}
+      <li><a href="#contact" class="btn-gold mt-2">{t('nav.contact')}</a></li>
+    </ul>
+  </div>
+</header>
+
+<script is:inline>
+  const btn = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+  menu?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => menu.classList.add('hidden'))
+  );
+</script>

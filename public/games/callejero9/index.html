@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Callejero 9 · Zenythic</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../_shared/base.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="table">
+      <!-- ============ TOP BAR ============ -->
+      <header class="topbar">
+        <a href="/" class="topbar__brand">
+          <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+            <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span>ZENYTHIC</span>
+        </a>
+        <div class="topbar__center">
+          <span class="topbar__title">Callejero 9</span>
+          <span class="topbar__subtitle">Card Game</span>
+        </div>
+        <div class="topbar__right">
+          <button id="rules-btn" class="topbar__icon-btn" title="Cómo se juega" aria-label="Reglas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+          <div class="topbar__balance">
+            <span class="topbar__balance-label">Saldo</span>
+            <span id="balance" class="topbar__balance-value">$1000</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============ MESA ============ -->
+      <main class="felt">
+        <!-- Detalle decorativo: logo de agua + línea dorada -->
+        <div class="felt__deco" aria-hidden="true">
+          <span class="felt__logo">ZENYTHIC</span>
+          <span class="felt__line"></span>
+          <span class="felt__logo-sub">CALLEJERO 9 · BANCA FIJA</span>
+        </div>
+
+        <!-- ===== BANCA (arriba, centro) ===== -->
+        <section class="seat seat--bank" data-seat="bank">
+          <div class="seat__head">
+            <span class="seat__badge seat__badge--bank">DEALER</span>
+            <span class="seat__name">Dealer</span>
+            <span class="seat__score" data-score>—</span>
+          </div>
+          <div class="seat__cards" data-cards></div>
+          <div class="seat__result" data-result></div>
+        </section>
+
+        <!-- Línea separadora central con etiqueta -->
+        <div class="felt__divider" aria-hidden="true">
+          <span class="felt__divider-line"></span>
+        </div>
+
+        <!-- ===== PLAZAS JUGABLES (abajo, fila · izquierda → derecha: P3 · P1 · P2) ===== -->
+        <div class="players-row">
+          <!-- Plaza izquierda -->
+          <section class="seat seat--spot" data-seat="player3" data-spot-index="1">
+            <div class="seat__stage">
+              <div class="seat__cards" data-cards>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+              </div>
+              <div class="seat__chipstack" data-chipstack aria-hidden="true"></div>
+            </div>
+            <div class="seat__head">
+              <span class="seat__badge">PLAZA 1</span>
+              <span class="seat__score" data-score>—</span>
+            </div>
+            <div class="seat__bet" data-bet></div>
+            <div class="seat__result" data-result></div>
+          </section>
+
+          <!-- Plaza central -->
+          <section class="seat seat--spot" data-seat="player1" data-spot-index="2">
+            <div class="seat__stage">
+              <div class="seat__cards" data-cards>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+              </div>
+              <div class="seat__chipstack" data-chipstack aria-hidden="true"></div>
+            </div>
+            <div class="seat__head">
+              <span class="seat__badge">PLAZA 2</span>
+              <span class="seat__score" data-score>—</span>
+            </div>
+            <div class="seat__bet" data-bet></div>
+            <div class="seat__result" data-result></div>
+          </section>
+
+          <!-- Plaza derecha -->
+          <section class="seat seat--spot" data-seat="player2" data-spot-index="3">
+            <div class="seat__stage">
+              <div class="seat__cards" data-cards>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+                <div class="zy-card-placeholder" aria-hidden="true"></div>
+              </div>
+              <div class="seat__chipstack" data-chipstack aria-hidden="true"></div>
+            </div>
+            <div class="seat__head">
+              <span class="seat__badge">PLAZA 3</span>
+              <span class="seat__score" data-score>—</span>
+            </div>
+            <div class="seat__bet" data-bet></div>
+            <div class="seat__result" data-result></div>
+          </section>
+        </div>
+
+        <!-- Mensaje flotante -->
+        <div id="toast" class="toast toast--hidden"></div>
+      </main>
+
+      <!-- ============ CONTROLES ============ -->
+      <footer class="controls">
+        <!-- Fase de apuesta -->
+        <div id="phase-bet" class="controls__phase">
+          <div class="bet-controls">
+            <span class="bet-controls__label">Selecciona ficha y haz click en una plaza</span>
+            <div class="bet-controls__chips">
+              <button class="chip chip--5 chip-pick" data-chip="5" type="button">5</button>
+              <button class="chip chip--25 chip-pick" data-chip="25" type="button">25</button>
+              <button class="chip chip--100 chip-pick" data-chip="100" type="button">100</button>
+            </div>
+            <button class="zy-btn zy-btn--sm" id="bet-clear" type="button">Limpiar todo</button>
+            <div class="bet-controls__display">
+              <span class="bet-controls__display-label">Total</span>
+              <span id="bet-amount" class="bet-controls__amount">$0</span>
+            </div>
+          </div>
+          <button id="deal-btn" class="zy-btn zy-btn--gold" disabled>Repartir cartas</button>
+        </div>
+
+        <!-- Fase de acción (pedir/plantar la plaza con foco) -->
+        <div id="phase-action" class="controls__phase controls__phase--hidden">
+          <span class="action__label">¿Pedir carta o plantarse?</span>
+          <button class="zy-btn zy-btn--light" id="stand-btn">Plantarse</button>
+          <button class="zy-btn zy-btn--gold" id="hit-btn">Pedir carta</button>
+        </div>
+
+        <!-- Fase de resolución -->
+        <div id="phase-result" class="controls__phase controls__phase--hidden">
+          <div id="result-msg" class="result-msg"></div>
+          <button class="zy-btn zy-btn--dark" id="next-btn">Otra ronda</button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ============ MODAL DE REGLAS ============ -->
+    <div id="rules-modal" class="modal modal--hidden" aria-hidden="true">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+        <header class="modal__head">
+          <div>
+            <span class="modal__kicker">Cómo se juega</span>
+            <h2 id="rules-title" class="modal__title">Callejero 9</h2>
+          </div>
+          <button class="modal__close" data-close aria-label="Cerrar">×</button>
+        </header>
+        <div class="modal__body">
+          <p class="rules-note" style="margin-top:0">
+            Baccarat de mesa. La casa actúa como banca fija y cubre las apuestas de las tres plazas.
+          </p>
+          <ol class="rules-list">
+            <li>
+              <span class="rules-list__num">1</span>
+              <div>
+                <strong>Apuestas.</strong>
+                Seleccione una ficha (5/25/100) y pulse una plaza para colocar su apuesta. Puede apostar en una, dos o las tres plazas, en cualquier orden. Las plazas sin apuesta permanecen inactivas. Antes del reparto se muestran marcadores de posición para indicar dónde irán las cartas, junto a sus fichas apiladas.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">2</span>
+              <div>
+                <strong>Reparto.</strong>
+                La casa reparte 2 cartas a cada plaza activa y 2 para sí misma, una de ellas descubierta.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">3</span>
+              <div>
+                <strong>Naturales.</strong>
+                Sumar 8 o 9 con las dos primeras cartas es un <em>natural</em>. Si la casa tiene un natural, la ronda se resuelve de inmediato.
+                <ul class="rules-list__sub">
+                  <li><strong>Natural de 9 de la casa</strong>: la casa gana a todas las plazas, incluso a aquellas que también sumen 9 (natural o no).</li>
+                  <li><strong>Natural de 8 de la casa</strong>: gana a menos que la plaza tenga 9 natural.</li>
+                  <li><strong>Plaza con natural de 9 y la casa llega a 9 tras pedir</strong> (sin natural): la mano se resuelve como empate.</li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">4</span>
+              <div>
+                <strong>Pedir o plantarse.</strong>
+                Sin natural, cada plaza apostada elige su jugada (de izquierda a derecha):
+                <ul class="rules-list__sub">
+                  <li><strong>0 a 5 puntos</strong> → conviene <strong>pedir</strong> una tercera carta.</li>
+                  <li><strong>6 o 7 puntos</strong> → conviene <strong>plantarse</strong>.</li>
+                </ul>
+                La plaza en turno se resalta con un foco para indicar que es su decisión.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">5</span>
+              <div>
+                <strong>Turno de la casa.</strong>
+                La casa destapa su carta cubierta: con 5 o menos pide tercera carta; con 6 o 7 se planta.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">6</span>
+              <div>
+                <strong>Resolución.</strong>
+                La casa compara su puntaje contra cada plaza de forma individual:
+                <ul class="rules-list__sub">
+                  <li><span class="dot dot--win"></span> <strong>Plaza gana</strong>: la casa paga el equivalente a su apuesta.</li>
+                  <li><span class="dot dot--lose"></span> <strong>Plaza pierde</strong>: la casa retiene la apuesta.</li>
+                  <li><span class="dot dot--tie"></span> <strong>Empate</strong>: se devuelve la apuesta íntegra.</li>
+                </ul>
+              </div>
+            </li>
+          </ol>
+          <p class="rules-note">
+            Las figuras (J, Q, K) valen 0 · El As vale 1 · El 10 vale 0 · El puntaje de la mano es la suma módulo 10 (siempre entre 0 y 9).
+          </p>
+        </div>
+        <footer class="modal__foot">
+          <button class="zy-btn zy-btn--gold" data-close>Entendido</button>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="./game.mjs"></script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+---
+// Layout estándar de un juego Zenythic:
+// header (logo + volver + saldo) + área de mesa + pie.
+import GameSplash from './GameSplash.astro';
+
+export interface Props {
+  gameName?: string;
+  /** Saldo de fichas visible en el header (string ya formateado). */
+  balance?: string;
+}
+
+const { gameName, balance } = Astro.props;
+---
+
+<GameSplash gameName={gameName} />
+
+<div class="min-h-screen flex flex-col bg-ink-900 text-white">
+  <!-- Header del juego -->
+  <header class="flex items-center justify-between px-5 py-4 border-b border-ink-700">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <svg viewBox="0 0 48 48" width="26" height="26" aria-hidden="true">
+        <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square"/>
+      </svg>
+      <span class="text-sm font-extrabold tracking-widest2 text-white group-hover:text-gold-400 transition-colors">ZENYTHIC</span>
+    </a>
+
+    <div class="text-xs uppercase tracking-widest2 text-ink-400 hidden sm:block">{gameName}</div>
+
+    <div class="flex items-center gap-4">
+      {balance && (
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-ink-400 text-xs uppercase tracking-wider">Saldo</span>
+          <span class="font-bold text-gold-400">{balance}</span>
+        </div>
+      )}
+      <a href="/" class="text-xs text-ink-400 hover:text-white transition-colors uppercase tracking-wider">
+        ← Salir
+      </a>
+    </div>
+  </header>
+
+  <!-- Mesa de juego -->
+  <main class="flex-1 flex flex-col">
+    <slot />
+  </main>
+
+  <!-- Pie -->
+  <footer class="px-5 py-3 border-t border-ink-700 text-center text-[10px] text-ink-500 uppercase tracking-widest2">
+    Zenythic · Juego responsable · +18 · Demo
+  </footer>
+</div>

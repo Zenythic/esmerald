@@ -1,0 +1,64 @@
+---
+import { getLangFromUrl, useTranslations, getLocalisedPath, type Lang } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+const otherPath = getLocalisedPath(Astro.url, otherLang);
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-white border-t border-ink-100">
+  <div class="container-z py-16">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
+      <!-- Marca -->
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-3 mb-4">
+          <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
+            <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span class="text-base font-extrabold tracking-widest2 text-ink-900">ZENYTHIC</span>
+        </div>
+        <p class="text-sm text-ink-500 leading-relaxed">{t('footer.tagline')}</p>
+      </div>
+
+      <!-- Explorar -->
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-widest2 text-ink-400 mb-4">{t('footer.explore')}</h4>
+        <ul class="space-y-3 text-sm text-ink-600">
+          <li><a href="#games" class="link-z">{t('nav.games')}</a></li>
+          <li><a href="#features" class="link-z">{t('nav.company')}</a></li>
+          <li><a href="#technology" class="link-z">{t('nav.technology')}</a></li>
+        </ul>
+      </div>
+
+      <!-- Compañía -->
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-widest2 text-ink-400 mb-4">{t('footer.company')}</h4>
+        <ul class="space-y-3 text-sm text-ink-600">
+          <li><a href="#" class="link-z">{t('footer.links.about')}</a></li>
+          <li><a href="#" class="link-z">{t('footer.links.careers')}</a></li>
+          <li><a href="#" class="link-z">{t('footer.links.press')}</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-widest2 text-ink-400 mb-4">{t('footer.legal')}</h4>
+        <ul class="space-y-3 text-sm text-ink-600">
+          <li><a href="#" class="link-z">{t('footer.links.terms')}</a></li>
+          <li><a href="#" class="link-z">{t('footer.links.privacy')}</a></li>
+          <li><a href="#" class="link-z">{t('footer.links.responsible')}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 pt-8 border-t border-ink-100 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-ink-400">© {year} Zenythic. {t('footer.rights')}</p>
+      <a href={otherPath} class="text-xs font-semibold tracking-widest2 text-ink-500 hover:text-gold-600 border border-ink-200 hover:border-gold-400 px-3 py-1.5 transition-colors">
+        {otherLang.toUpperCase()}
+      </a>
+    </div>
+
+    <p class="mt-6 text-xs text-ink-400 leading-relaxed text-center md:text-left">{t('footer.disclaimer')}</p>
+  </div>
+</footer>

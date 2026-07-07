@@ -1,0 +1,66 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Catálogo — los marcados "playable" tienen demo, el resto próximamente
+const games = [
+  { name: 'Callejero 9', tag: 'Cartas', playable: true, href: '/games/callejero9/', image: '/games/callejero9/banner.png' },
+  { name: 'Apex', tag: 'Crash', playable: false },
+  { name: 'Oracle', tag: 'Mini-game', playable: false },
+  { name: 'Forge', tag: 'Mini-game', playable: false },
+  { name: 'Aether', tag: 'Crash', playable: false },
+  { name: 'Zenith', tag: 'Original', playable: false },
+];
+---
+
+<section id="games" class="py-24 md:py-32 bg-ink-50/40">
+  <div class="container-z">
+    <div class="reveal max-w-2xl">
+      <p class="kicker">{t('games.kicker')}</p>
+      <h2 class="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight text-ink-900">{t('games.title')}</h2>
+      <p class="mt-4 text-lg text-ink-500">{t('games.subtitle')}</p>
+    </div>
+
+    <div class="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {games.map((g) => (
+        <a
+          href={g.playable ? g.href : '#'}
+          class="reveal group relative bg-white border border-ink-100 hover:border-gold-400 transition-all duration-300 overflow-hidden block"
+        >
+          <!-- Marco dorado sutil -->
+          <span class="hairline-gold absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity z-10"></span>
+
+          <div class="aspect-[16/10] bg-gradient-to-br from-ink-50 to-ink-100 flex items-center justify-center relative overflow-hidden">
+            {g.image ? (
+              <img src={g.image} alt={g.name} class="w-full h-full object-cover" loading="lazy" />
+            ) : (
+              <>
+                <!-- Placeholder geométrico -->
+                <div class="absolute inset-0 opacity-50">
+                  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-gold-300/40 rotate-45"></div>
+                  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 border border-gold-400/40 rotate-12"></div>
+                </div>
+                <span class="relative text-3xl font-extrabold tracking-tight text-ink-300 group-hover:text-ink-400 transition-colors">{g.name}</span>
+              </>
+            )}
+            <span class="absolute top-4 right-4 text-[10px] font-semibold uppercase tracking-widest2 text-gold-600 bg-white/80 px-2 py-1">{g.tag}</span>
+            {g.playable && (
+              <span class="absolute top-4 left-4 text-[10px] font-semibold uppercase tracking-widest2 text-ink-900 bg-gold-400 px-2 py-1">● Demo</span>
+            )}
+          </div>
+
+          <div class="p-5 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-ink-900">{g.name}</h3>
+              <p class="text-xs text-ink-400">{g.playable ? 'Jugar demo' : t('games.soon')}</p>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A961" stroke-width="2" class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

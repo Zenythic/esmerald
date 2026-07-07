@@ -1,0 +1,38 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const items = [
+  { key: 'fair', icon: 'M12 2 L20 6 V12 C20 16.5 16.5 20 12 22 C7.5 20 4 16.5 4 12 V6 Z' },
+  { key: 'mobile', icon: 'M7 2 H17 A1 1 0 0 1 18 3 V21 A1 1 0 0 1 17 22 H7 A1 1 0 0 1 6 21 V3 A1 1 0 0 1 7 2 Z M10 18 H14' },
+  { key: 'i18n', icon: 'M12 2 A10 10 0 1 0 12 22 A10 10 0 1 0 12 2 Z M2 12 H22 M12 2 C15 6 15 18 12 22 M12 2 C9 6 9 18 12 22' },
+  { key: 'integration', icon: 'M5 12 H19 M12 5 V19 M8 8 L16 16 M16 8 L8 16' },
+  { key: 'compliance', icon: 'M9 12 L11 14 L15 10 M12 2 L20 6 V12 C20 16.5 16.5 20 12 22 C7.5 20 4 16.5 4 12 V6 Z' },
+  { key: 'support', icon: 'M21 11.5 A8.38 8.38 0 0 1 12.5 20 A8.5 8.5 0 1 1 21 11.5 Z M8 11.5 A4 4 0 0 1 12 7.5' },
+];
+---
+
+<section id="features" class="py-24 md:py-32 border-t border-ink-100 bg-white">
+  <div class="container-z">
+    <div class="reveal max-w-2xl">
+      <p class="kicker">{t('features.kicker')}</p>
+      <h2 class="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight text-ink-900">{t('features.title')}</h2>
+      <p class="mt-4 text-lg text-ink-500">{t('features.subtitle')}</p>
+    </div>
+
+    <div class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-ink-100 border border-ink-100">
+      {items.map((it) => (
+        <div class="reveal group bg-white p-8 hover:bg-ink-50/50 transition-colors">
+          <div class="w-12 h-12 flex items-center justify-center border border-gold-400 text-gold-600 group-hover:bg-gold-400 group-hover:text-ink-900 transition-colors">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d={it.icon} />
+            </svg>
+          </div>
+          <h3 class="mt-6 text-lg font-bold text-ink-900">{t(`features.items.${it.key}.title`)}</h3>
+          <p class="mt-2 text-sm text-ink-500 leading-relaxed">{t(`features.items.${it.key}.desc`)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

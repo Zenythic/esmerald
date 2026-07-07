@@ -1,0 +1,28 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const stats = [
+  { value: t('trust.gamesValue'), label: t('trust.games') },
+  { value: t('trust.marketsValue'), label: t('trust.markets') },
+  { value: t('trust.uptimeValue'), label: t('trust.uptime') },
+  { value: t('trust.integrationValue'), label: t('trust.integration') },
+];
+---
+
+<section class="py-20 md:py-24 border-t border-ink-100 bg-white">
+  <div class="container-z">
+    <p class="reveal text-center text-sm md:text-base text-ink-500 max-w-2xl mx-auto mb-14">
+      {t('trust.title')}
+    </p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink-100 border border-ink-100">
+      {stats.map((s) => (
+        <div class="reveal bg-white px-6 py-10 text-center">
+          <div class="text-4xl md:text-5xl font-extrabold text-ink-900 tracking-tight">{s.value}</div>
+          <div class="mt-2 text-xs font-semibold uppercase tracking-widest2 text-gold-600">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

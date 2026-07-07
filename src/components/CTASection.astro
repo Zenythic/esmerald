@@ -1,0 +1,24 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section id="contact" class="py-24 md:py-32 bg-ink-900 relative overflow-hidden">
+  <!-- Líneas doradas decorativas -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-400/30 to-transparent"></div>
+  </div>
+
+  <div class="container-z text-center relative">
+    <p class="reveal kicker justify-center text-gold-400 !text-gold-400 mx-auto">{t('cta.kicker')}</p>
+    <h2 class="reveal mt-6 text-3xl md:text-5xl font-extrabold tracking-tight text-white">{t('cta.title')}</h2>
+    <p class="reveal mt-4 text-lg text-ink-300 max-w-2xl mx-auto">{t('cta.subtitle')}</p>
+
+    <div class="reveal mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="mailto:hello@zenythic.com" class="btn-gold">{t('cta.button')}</a>
+      <a href="mailto:partners@zenythic.com" class="btn !border-ink-700 !text-white hover:!border-gold-400">{t('cta.secondary')}</a>
+    </div>
+  </div>
+</section>
