@@ -4,10 +4,16 @@
 
 .table {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   height: 100vh;
   height: 100dvh;
-  background: radial-gradient(ellipse 80% 60% at 50% 45%, var(--felt-light), var(--felt) 60%, #0a1c16 100%);
+  background:
+    /* viñeta dinámica */
+    radial-gradient(ellipse 80% 60% at 50% 45%, transparent 30%, rgba(0,0,0,0.4) 100%),
+    /* felt con textura de ruido */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+    /* base del felt */
+    radial-gradient(ellipse 80% 60% at 50% 45%, var(--felt-light), var(--felt) 60%, #0a1c16 100%);
   overflow: hidden;
 }
 
@@ -100,6 +106,137 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ---- Screen-flash de victoria/derrota ---- */
+.flash-win {
+  position: fixed;
+  inset: 0;
+  z-index: 8900;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(74,222,128,0.5), transparent 65%);
+  opacity: 0;
+  animation: zy-flash-win 0.9s ease-out forwards;
+}
+@keyframes zy-flash-win {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.flash-lose {
+  position: fixed;
+  inset: 0;
+  z-index: 8900;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(248,113,113,0.5), transparent 65%);
+  opacity: 0;
+  animation: zy-flash-lose 0.7s ease-out forwards;
+}
+@keyframes zy-flash-lose {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- Confetti dorado ---- */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti span {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 14px;
+  background: var(--gold-400);
+  opacity: 0.9;
+  animation: zy-confetti linear forwards;
+}
+@keyframes zy-confetti {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ============ TICKER DE GANADORES ============ */
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 0.6rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(201, 169, 97, 0.12);
+  overflow: hidden;
+  z-index: 4;
+}
+.ticker__label {
+  flex-shrink: 0;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #f87171;
+  padding: 0.1rem 0.45rem;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  animation: zy-live 1.8s ease-in-out infinite;
+}
+@keyframes zy-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.ticker__track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker__content {
+  display: inline-flex;
+  gap: 2rem;
+  white-space: nowrap;
+  animation: zy-ticker 80s linear infinite;
+  padding-left: 100%;
+}
+.ticker__content:hover { animation-play-state: paused; }
+@keyframes zy-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--ink-300);
+  font-weight: 600;
+}
+.ticker__item .t-name {
+  color: var(--ink-200);
+  font-weight: 700;
+}
+.ticker__item .t-spot {
+  color: var(--gold-400);
+  font-weight: 700;
+}
+.ticker__item .t-win {
+  color: #4ade80;
+  font-weight: 800;
+}
+.ticker__item .t-lose {
+  color: #f87171;
+  font-weight: 700;
+}
+.ticker__item--me {
+  background: rgba(201, 169, 97, 0.1);
+  border-left: 2px solid var(--gold-400);
+  padding: 0.15rem 0.5rem;
+}
+.ticker__item::before {
+  content: '◆';
+  color: rgba(201, 169, 97, 0.4);
+  font-size: 0.55rem;
+}
+.ticker__item--me::before { color: var(--gold-400); }
+
 /* ============ MESA / FELT ============ */
 .felt {
   position: relative;
@@ -110,7 +247,7 @@
   padding: 1.5rem;
   overflow: hidden;
 }
-/* Marco dorado de la mesa */
+/* Marco dorado de la mesa con líneas de costura */
 .felt::before {
   content: '';
   position: absolute;
@@ -118,12 +255,14 @@
   border: 1px solid rgba(201, 169, 97, 0.18);
   border-radius: 180px / 60px;
   pointer-events: none;
+  /* línea de costura interior punteada */
+  box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px rgba(201, 169, 97, 0.06);
 }
 .felt::after {
   content: '';
   position: absolute;
   inset: 1.4rem;
-  border: 1px solid rgba(201, 169, 97, 0.08);
+  border: 1px dashed rgba(201, 169, 97, 0.1);
   border-radius: 180px / 60px;
   pointer-events: none;
 }
@@ -174,6 +313,34 @@
   width: 100%;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.35), transparent);
+}
+
+/* Polvo dorado flotante en la mesa */
+.felt__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.felt__particles span {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(201, 169, 97, 0.5);
+  box-shadow: 0 0 4px rgba(201, 169, 97, 0.4);
+  animation: zy-felt-dust linear infinite;
+}
+.felt__particles span:nth-child(1) { left: 15%; bottom: -10px; animation-duration: 20s; }
+.felt__particles span:nth-child(2) { left: 35%; bottom: -10px; animation-duration: 28s; animation-delay: -8s; }
+.felt__particles span:nth-child(3) { left: 55%; bottom: -10px; animation-duration: 24s; animation-delay: -14s; }
+.felt__particles span:nth-child(4) { left: 75%; bottom: -10px; animation-duration: 32s; animation-delay: -4s; }
+@keyframes zy-felt-dust {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-80vh) translateX(15px); opacity: 0; }
 }
 
 /* ============ SEAT ============ */
@@ -340,17 +507,59 @@
 /* Resaltado de ganador */
 .seat--winner {
   transform: translateY(-6px);
+  animation: zy-winner-rise 0.5s var(--ease-out-expo, ease) both;
+}
+@keyframes zy-winner-rise {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
 }
 .seat--winner .seat__cards {
   filter: drop-shadow(0 0 16px rgba(74, 222, 128, 0.45));
+  animation: zy-winner-glow 1.8s ease-in-out infinite;
+}
+@keyframes zy-winner-glow {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.35)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.6)); }
 }
 .seat--bank.seat--winner .seat__cards {
   filter: drop-shadow(0 0 16px rgba(201, 169, 97, 0.55));
+  animation: zy-winner-gold 1.8s ease-in-out infinite;
+}
+@keyframes zy-winner-gold {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(201, 169, 97, 0.4)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(201, 169, 97, 0.65)); }
+}
+
+/* Plaza perdedora: difuminado rojo */
+.seat__result--lose ~ .seat__stage,
+.seat--loser {
+  animation: zy-loser-shake 0.4s ease;
+}
+@keyframes zy-loser-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
 
 /* Foco sobre la plaza en turno de acción */
 .seat--spotlight {
   position: relative;
+}
+.seat--spotlight::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 0%,
+    rgba(201, 169, 97, 0.18) 0%,
+    rgba(201, 169, 97, 0.06) 40%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 3;
+  animation: zy-foco-light 2s ease-in-out infinite;
 }
 .seat--spotlight::after {
   content: '';
@@ -367,6 +576,10 @@
 @keyframes zy-foco {
   0%, 100% { box-shadow: 0 0 14px rgba(201, 169, 97, 0.35); opacity: 0.85; }
   50%      { box-shadow: 0 0 22px rgba(201, 169, 97, 0.7);  opacity: 1; }
+}
+@keyframes zy-foco-light {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
 }
 
 /* Fila de jugadores (abajo) */
@@ -412,9 +625,14 @@
   gap: 1.25rem;
   flex-wrap: wrap;
   width: 100%;
+  animation: zy-phase-in 0.4s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
 }
 .controls__phase--hidden {
   display: none;
+}
+@keyframes zy-phase-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 /* --- Apuesta --- */
@@ -568,6 +786,11 @@
   letter-spacing: 0.03em;
   margin-right: 1rem;
   font-size: 0.95rem;
+  animation: zy-result-in 0.5s var(--ease-out-expo, ease) both;
+}
+@keyframes zy-result-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .result-msg--win { color: #4ade80; }
 .result-msg--lose { color: #f87171; }
@@ -578,7 +801,6 @@
   position: absolute;
   top: 1rem;
   left: 50%;
-  transform: translateX(-50%);
   background: var(--ink-900);
   border: 1px solid var(--gold-400);
   color: var(--gold-400);
@@ -588,14 +810,19 @@
   text-transform: uppercase;
   font-size: 0.75rem;
   white-space: nowrap;
-  opacity: 1;
-  transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 10;
+  transform: translateX(-50%) translateY(-12px) scale(0.9);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-expo, ease), transform 0.3s var(--ease-spring, ease);
+}
+.toast:not(.toast--hidden) {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 .toast--hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) translateY(-8px);
+  transform: translateX(-50%) translateY(-12px) scale(0.9);
 }
 
 /* ============ MODAL DE REGLAS ============ */
@@ -833,54 +1060,23 @@
   .rules-list__num { width: 22px; height: 22px; font-size: 0.7rem; }
 }
 
-/* ---- Móvil landscape (acostado): triángulo invertido + controles compactos ---- */
-@media (max-width: 920px) and (orientation: landscape) and (max-height: 540px) {
-  .topbar { padding: 0.35rem 0.75rem; }
-  .topbar__title { font-size: 0.72rem; }
-  .topbar__subtitle { font-size: 0.5rem; }
-  .topbar__balance-value { font-size: 0.95rem; }
+/* ---- Landscape bloqueado por rotate-lock.mjs ---- */
 
-  .felt { padding: 0.4rem; grid-template-rows: 0.9fr auto 1fr; }
-  .felt::before, .felt::after { inset: 0.3rem; border-radius: 140px / 40px; }
-  .felt__deco { opacity: 0.25; }
-  .felt__logo { font-size: 1.4rem; }
-  .felt__logo-sub { font-size: 0.45rem; }
-
-  .seat__name { display: none; }
-  .seat__badge { font-size: 0.48rem; padding: 0.1rem 0.35rem; }
-  .seat__score { min-width: 24px; height: 24px; font-size: 0.72rem; }
-  .zy-card { width: 38px; height: 54px; }
-  .zy-card__rank { font-size: 0.6rem; }
-  .zy-card__center { font-size: 0.9rem; }
-  .zy-card--back::after { font-size: 0.85rem; }
-  .zy-card-placeholder { width: 38px; height: 54px; }
-  .seat__cards { min-height: 54px; }
-  .seat__chipstack { min-height: 54px; }
-  .chip--mini { width: 20px; height: 20px; margin-top: -14px; }
-  .chipstack__label { font-size: 0.48rem; bottom: -0.85rem; }
-
-  /* Controles compactos en landscape: una sola fila ajustada */
-  .controls {
-    padding: 0.4rem 0.7rem;
-    min-height: 0;
-    max-height: 24vh;
-    overflow-y: auto;
+/* ---- Accesibilidad: movimiento reducido ---- */
+@media (prefers-reduced-motion: reduce) {
+  .felt__particles span,
+  .zy-btn--gold::before,
+  .seat--active,
+  .seat--spotlight::before,
+  .seat--spotlight::after,
+  .seat--winner .seat__cards,
+  .seat--bank.seat--winner .seat__cards,
+  .confetti span,
+  .flash-win,
+  .flash-lose {
+    animation: none !important;
   }
-  .controls__phase {
-    gap: 0.6rem;
-    align-items: center;
+  .zy-card, .toast, .controls__phase, .result-msg, .seat {
+    transition: none !important;
   }
-  .bet-controls { gap: 0.45rem; }
-  .bet-controls__label { font-size: 0.5rem; }
-  .chip { width: 34px; height: 34px; font-size: 0.62rem; border-width: 2px; }
-  .chip--5, .chip--25, .chip--100 { box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-  .chip--mini { box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
-  .bet-controls__display { padding-left: 0.5rem; }
-  .bet-controls__display-label { font-size: 0.48rem; }
-  .bet-controls__amount { font-size: 0.92rem; }
-  .zy-btn { padding: 0.4rem 0.7rem; font-size: 0.72rem; }
-  .action__label { font-size: 0.72rem; }
-  .result-msg { font-size: 0.8rem; margin-right: 0.6rem; }
-  .toast { font-size: 0.62rem; padding: 0.4rem 0.9rem; top: 0.5rem; }
-  .seat--spotlight::after { inset: -5px -7px; }
 }

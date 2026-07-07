@@ -1,0 +1,1314 @@
+/* ===== Heist — estilos =====
+   Estética: bóveda de banco. Acero oscuro + dorado. Profundidad, metal, tensión.
+   Tokens locales de movimiento (coherentes con _shared/base.css). */
+
+.stage {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-tense: cubic-bezier(0.5, 0, 0.75, 0); /* acelera al final: tensión */
+  --dur-fast: 0.18s;
+  --dur-med: 0.35s;
+  --dur-slow: 0.6s;
+
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, #1f2a38 0%, transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, #060a10 0%, #0a1018 55%, #05080c 100%);
+  color: #fff;
+  overflow: hidden;
+}
+
+/* ---- Luz volumétrica (cono desde arriba) ---- */
+.stage::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: 70%;
+  height: 75%;
+  transform: translateX(-50%);
+  background: conic-gradient(from 180deg at 50% 0%,
+    transparent 0deg,
+    rgba(201, 169, 97, 0.07) 30deg,
+    rgba(201, 169, 97, 0.12) 90deg,
+    rgba(201, 169, 97, 0.07) 150deg,
+    transparent 180deg);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+  animation: zy-light 18s ease-in-out infinite;
+}
+@keyframes zy-light {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scaleY(1); }
+  50%      { opacity: 1;   transform: translateX(-50%) scaleY(1.05); }
+}
+
+/* ---- Polvo flotante de la bóveda ---- */
+.dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.dust span {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(201, 169, 97, 0.6);
+  box-shadow: 0 0 4px rgba(201, 169, 97, 0.5);
+  animation: zy-dust linear infinite;
+}
+.dust span:nth-child(1) { left: 12%; bottom: -10px; animation-duration: 24s; animation-delay: 0s; }
+.dust span:nth-child(2) { left: 28%; bottom: -10px; animation-duration: 32s; animation-delay: -6s; }
+.dust span:nth-child(3) { left: 47%; bottom: -10px; animation-duration: 28s; animation-delay: -12s; }
+.dust span:nth-child(4) { left: 66%; bottom: -10px; animation-duration: 36s; animation-delay: -3s; }
+.dust span:nth-child(5) { left: 81%; bottom: -10px; animation-duration: 30s; animation-delay: -18s; }
+.dust span:nth-child(6) { left: 58%; bottom: -10px; animation-duration: 26s; animation-delay: -9s; opacity: 0.4; }
+@keyframes zy-dust {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+
+/* ---- Viñeta que se intensifica con la profundidad ---- */
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%);
+  transition: background var(--dur-slow) ease;
+}
+/* A mayor profundidad, más oscuridad / tinte rojizo de tensión */
+.stage[data-depth="deep"]::after {
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(20,5,5,0.7) 100%);
+}
+.stage[data-depth="critical"]::after {
+  background: radial-gradient(ellipse 65% 55% at 50% 50%, transparent 20%, rgba(40,8,8,0.82) 100%);
+}
+
+/* ============ TOP BAR ============ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.15));
+  border-bottom: 1px solid rgba(201, 169, 97, 0.25);
+  backdrop-filter: blur(6px);
+  position: relative;
+  z-index: 5;
+}
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  font-size: 0.85rem;
+}
+.topbar__center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.topbar__title {
+  display: block;
+  color: var(--gold-400);
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  font-size: 1rem;
+}
+.topbar__subtitle {
+  display: block;
+  color: var(--ink-400);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.topbar__icon-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--ink-300);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+}
+.topbar__icon-btn:hover {
+  border-color: var(--gold-400);
+  color: var(--gold-400);
+}
+.topbar__balance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+.topbar__balance-label {
+  font-size: 0.6rem;
+  color: var(--ink-400);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.topbar__balance-value {
+  color: var(--gold-400);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ============ TICKER DE GANADORES ============ */
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 0.6rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(201, 169, 97, 0.12);
+  overflow: hidden;
+  z-index: 4;
+}
+.ticker__label {
+  flex-shrink: 0;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #f87171;
+  padding: 0.1rem 0.45rem;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  margin-left: 0;
+  animation: zy-live 1.8s ease-in-out infinite;
+}
+@keyframes zy-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.ticker__track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker__content {
+  display: inline-flex;
+  gap: 2rem;
+  white-space: nowrap;
+  animation: zy-ticker 80s linear infinite;
+  padding-left: 100%;
+}
+.ticker__content:hover { animation-play-state: paused; }
+@keyframes zy-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--ink-300);
+  font-weight: 600;
+}
+.ticker__item .t-name {
+  color: var(--ink-200);
+  font-weight: 700;
+}
+.ticker__item .t-box {
+  color: var(--gold-400);
+  font-weight: 700;
+}
+.ticker__item .t-win {
+  color: #4ade80;
+  font-weight: 800;
+}
+.ticker__item .t-bust {
+  color: #f87171;
+  font-weight: 700;
+}
+.ticker__item::before {
+  content: '◆';
+  color: rgba(201, 169, 97, 0.4);
+  font-size: 0.55rem;
+}
+.ticker__item--me {
+  background: rgba(201, 169, 97, 0.1);
+  border-left: 2px solid var(--gold-400);
+  padding: 0.15rem 0.5rem;
+}
+.ticker__item--me::before { color: var(--gold-400); }
+
+/* ============ ÁREA DE JUEGO (3 columnas) ============ */
+.vault {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- Paneles laterales ---- */
+.panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.panel__block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.panel__label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+.panel__big {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.panel__big span {
+  font-size: 0.9rem;
+  color: var(--ink-400);
+  font-weight: 600;
+}
+.panel__big--gold { color: var(--gold-400); }
+.panel__big--green { color: #4ade80; }
+/* Multiplicador acumulado cambia de color según tamaño */
+#current-mult.mult--low  { color: #4ade80; }
+#current-mult.mult--mid  { color: #facc15; }
+#current-mult.mult--high { color: #fb923c; }
+#current-mult.mult--mega { color: #f87171; }
+.panel__hint {
+  font-size: 0.75rem;
+  color: var(--ink-300);
+}
+.panel__hint strong { color: #f87171; }
+.panel__divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,97,0.25), transparent);
+  margin: 0.25rem 0;
+}
+
+/* ---- Historial ---- */
+.history {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+.history__empty {
+  color: var(--ink-400);
+  font-style: italic;
+}
+.history li:not(.history__empty) {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  background: rgba(0,0,0,0.25);
+  border-left: 2px solid var(--gold-500);
+}
+.history__mult { color: var(--gold-400); font-weight: 700; }
+.history__bust { color: #f87171; border-left-color: #f87171; }
+
+/* ============ BÓVEDA CENTRAL ============ */
+.vault__core {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Marca de agua Zenythic de fondo */
+.vault__deco {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.vault__logo {
+  display: block;
+  color: rgba(201, 169, 97, 0.1);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  letter-spacing: 0.4em;
+}
+.vault__logo-sub {
+  display: block;
+  color: rgba(201, 169, 97, 0.22);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  margin-top: 0.3rem;
+}
+.vault__line {
+  display: block;
+  width: 60px;
+  height: 1px;
+  margin: 0.5rem auto;
+  background: rgba(201, 169, 97, 0.28);
+}
+
+/* Puerta de bóveda decorativa de fondo */
+.bank-door {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0.12;
+}
+.bank-door__ring {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-500);
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+}
+.bank-door__ring--2 {
+  width: 360px;
+  height: 360px;
+  border-style: dashed;
+  border-width: 1px;
+  animation: zy-rotate 80s linear infinite;
+}
+.bank-door__hub {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-400), var(--gold-600));
+  box-shadow: 0 0 40px rgba(201,169,97,0.4);
+}
+@keyframes zy-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Grid de cajas ---- */
+.vault__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 640px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ---- Cada caja fuerte ---- */
+.box {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background:
+    /* acero cepillado: líneas finas diagonales */
+    repeating-linear-gradient(115deg,
+      rgba(255,255,255,0.03) 0 1px,
+      transparent 1px 4px),
+    /* brillo metálico superior */
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 40%),
+    /* base */
+    linear-gradient(145deg, #2a3340, #161d27);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: default;
+  transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+  overflow: hidden;
+}
+/* Marco interior + tornillos esquineros */
+.box::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+.box::after {
+  /* 4 tornillos en las esquinas */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 2px at 8px 8px, rgba(201,169,97,0.5), transparent 70%),
+    radial-gradient(circle 2px at calc(100% - 8px) 8px, rgba(201,169,97,0.5), transparent 70%),
+    radial-gradient(circle 2px at 8px calc(100% - 8px), rgba(201,169,97,0.5), transparent 70%),
+    radial-gradient(circle 2px at calc(100% - 8px) calc(100% - 8px), rgba(201,169,97,0.5), transparent 70%);
+}
+
+/* ---- Dial SVG (reloj que se completa) ---- */
+.box__dial {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+}
+.box__dial-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* empieza desde arriba */
+}
+.box__dial-track {
+  fill: none;
+  stroke: rgba(255,255,255,0.1);
+  stroke-width: 3;
+}
+.box__dial-progress {
+  fill: none;
+  stroke: var(--gold-400);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 125.6; /* 2π·20 */
+  stroke-dashoffset: 125.6;
+  transition: stroke-dashoffset 0.05s linear;
+  filter: drop-shadow(0 0 3px rgba(201,169,97,0.6));
+}
+/* Numerales 0-9 alrededor del dial (ticks) */
+.box__dial-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.box__dial-ticks span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 28px;
+  margin-left: -1.5px;
+  margin-top: -28px;
+  transform-origin: 50% 28px;
+  font-size: 0;
+}
+.box__dial-ticks span::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 4px;
+  margin-left: -0.5px;
+  background: rgba(255,255,255,0.18);
+}
+/* Aguja del reloj */
+.box__dial-needle {
+  position: absolute;
+  width: 2px;
+  height: 22px;
+  background: linear-gradient(180deg, var(--gold-300), var(--gold-500));
+  border-radius: 1px;
+  top: calc(50% - 22px);
+  left: calc(50% - 1px);
+  transform-origin: 50% 100%;
+  transform: rotate(0deg);
+  transition: transform 0.05s linear;
+  box-shadow: 0 0 4px rgba(201,169,97,0.7);
+  z-index: 2;
+}
+/* Pivote central de la aguja */
+.box__dial::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--gold-400);
+  box-shadow: 0 0 5px rgba(201,169,97,0.8);
+  z-index: 3;
+}
+/* Grabado ZENYTHIC VAULT en bajo relieve */
+.box__engrave {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.42rem;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.12);
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
+  pointer-events: none;
+}
+
+.box__num {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--ink-400);
+  font-weight: 600;
+}
+.box__range {
+  font-size: 0.7rem;
+  color: var(--ink-300);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.box__mult {
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  min-height: 1.1rem;
+  text-shadow: 0 0 12px currentColor;
+}
+/* Tamaños y colores según multiplicador */
+.box__mult--low    { color: #4ade80; font-size: 1rem; }       /* < 2x: verde */
+.box__mult--mid    { color: #facc15; font-size: 1.15rem; }    /* 2-5x: amarillo */
+.box__mult--high   { color: #fb923c; font-size: 1.3rem; }     /* 5-15x: naranja */
+.box__mult--mega   { color: #f87171; font-size: 1.5rem; }     /* > 15x: rojo */
+.box__mult--pop {
+  animation: zy-mult-pop 0.6s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
+}
+@keyframes zy-mult-pop {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+/* Streak: cajas abiertas laten en verde sincronizadas a partir de 3+ */
+.box--opened.box--streak .box__dial-progress {
+  animation: zy-streak 1.8s ease-in-out infinite;
+}
+@keyframes zy-streak {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(74,222,128,0.4)); }
+  50%      { filter: drop-shadow(0 0 7px rgba(74,222,128,0.85)); }
+}
+
+/* Estados de la caja */
+.box--locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.box--active {
+  cursor: pointer;
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 1px var(--gold-400), 0 0 20px rgba(201,169,97,0.25);
+  animation: zy-pulse 1.6s ease-in-out infinite;
+}
+.box--active:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+.box--opening {
+  border-color: var(--gold-300);
+  box-shadow: 0 0 0 1px var(--gold-300), 0 0 28px rgba(201,169,97,0.4);
+}
+.box--opening .box__dial-progress {
+  filter: drop-shadow(0 0 6px rgba(201,169,97,0.8));
+}
+.box--opened {
+  background: linear-gradient(145deg, #1e3a2f, #14241d);
+  border-color: rgba(74,222,128,0.4);
+}
+.box--opened .box__dial-progress {
+  stroke: #4ade80;
+  filter: drop-shadow(0 0 4px rgba(74,222,128,0.6));
+}
+.box--opened .box__mult { color: #4ade80; }
+
+.box--exploding,
+.box--busted {
+  background: linear-gradient(145deg, #4a1e1e, #2a1414);
+  border-color: #f87171;
+  animation: zy-shake 0.5s ease;
+}
+.box--busted .box__dial-progress,
+.box--exploding .box__dial-progress {
+  stroke: #f87171;
+}
+
+@keyframes zy-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--gold-400), 0 0 12px rgba(201,169,97,0.15); }
+  50%      { box-shadow: 0 0 0 1px var(--gold-400), 0 0 28px rgba(201,169,97,0.45); }
+}
+@keyframes zy-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* Splash de tinta que cubre la pantalla — negro azabache viscoso */
+.ink-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+    rgba(0, 0, 0, 0.97) 0%,
+    rgba(5, 5, 8, 0.92) 18%,
+    rgba(10, 8, 14, 0.7) 35%,
+    rgba(15, 10, 20, 0.3) 55%,
+    transparent 75%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+/* Blob viscoso principal con deformación */
+.ink-splash::before {
+  content: '';
+  position: absolute;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%) scale(0);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(40,30,50,0.9), rgba(0,0,0,0.98) 60%),
+    radial-gradient(circle at 60% 70%, rgba(20,15,30,0.8), transparent 70%);
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  filter: blur(8px);
+  opacity: 0;
+}
+/* Gota estela */
+.ink-splash::after {
+  content: '';
+  position: absolute;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  width: 90px;
+  height: 90px;
+  transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(circle, rgba(0,0,0,0.9), transparent 65%);
+  border-radius: 50%;
+  filter: blur(4px);
+  opacity: 0;
+}
+.ink-splash--show {
+  opacity: 1;
+  animation: zy-ink 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ink-splash--show::before {
+  animation: zy-ink-blob 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.ink-splash--show::after {
+  animation: zy-ink-drop 1.1s ease-out 0.15s forwards;
+}
+@keyframes zy-ink {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  100% { opacity: 0.92; }
+}
+@keyframes zy-ink-blob {
+  0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; }
+  20%  { opacity: 1; }
+  50%  { transform: translate(-50%, -50%) scale(8) rotate(40deg); border-radius: 58% 42% 37% 63% / 56% 59% 41% 44%; }
+  100% { transform: translate(-50%, -50%) scale(14) rotate(90deg); opacity: 0.95; border-radius: 50%; }
+}
+@keyframes zy-ink-drop {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  30%  { opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+/* Esquirlas negras que saltan desde el punto de impacto */
+.ink-shard {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #0a0a0e;
+  border: 1px solid rgba(201,169,97,0.4);
+  z-index: 9001;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: zy-shard 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes zy-shard {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.3) rotate(var(--tr));
+    opacity: 0;
+  }
+}
+
+/* ============ TOAST ============ */
+.toast {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  background: rgba(15,15,18,0.92);
+  border: 1px solid var(--gold-400);
+  color: var(--gold-400);
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 10;
+  transform: translateX(-50%) translateY(-12px) scale(0.9);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-expo, ease), transform 0.3s var(--ease-spring, ease);
+}
+.toast:not(.toast--hidden) {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+.toast--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-12px) scale(0.9);
+}
+
+/* ============ CONTROLES ============ */
+.controls {
+  background: linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+  border-top: 1px solid rgba(201,169,97,0.25);
+  padding: 1.25rem 1.5rem;
+  min-height: 96px;
+  position: relative;
+  z-index: 5;
+}
+.controls__phase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  animation: zy-phase-in 0.4s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+}
+.controls__phase--hidden { display: none; }
+@keyframes zy-phase-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.bet-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.bet-controls__label {
+  color: var(--ink-400);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-right: 0.3rem;
+}
+.bet-controls__chips {
+  display: flex;
+  gap: 0.5rem;
+}
+.bet-controls__display {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.bet-controls__display-label {
+  font-size: 0.6rem;
+  color: var(--ink-400);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.bet-controls__amount {
+  color: var(--gold-400);
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+/* ---- Fichas circulares ---- */
+.chip {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px dashed rgba(255,255,255,0.5);
+  background: var(--ink-800);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: grid;
+  place-items: center;
+}
+.chip:hover:not(:disabled) {
+  transform: translateY(-3px) rotate(-8deg);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+.chip--5    { background: #5b2c2c; }
+.chip--25   { background: #1e3a5f; }
+.chip--100  { background: #2d2d2d; border-color: var(--gold-400); color: var(--gold-400); }
+.chip:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ---- Botones grandes de play ---- */
+.zy-btn--gold {
+  position: relative;
+  overflow: hidden;
+}
+.zy-btn--gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg);
+  animation: zy-shimmer 3.5s ease-in-out infinite;
+}
+@keyframes zy-shimmer {
+  0%, 100% { left: -60%; }
+  40%, 60% { left: 120%; }
+}
+.zy-btn--lg {
+  padding: 0.9rem 1.8rem;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  line-height: 1;
+}
+.zy-btn--lg .btn__sub {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.85;
+  letter-spacing: 0.05em;
+}
+#cashout-btn {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  line-height: 1;
+}
+#cashout-btn .btn__label { font-size: 0.85rem; font-weight: 700; }
+#cashout-btn .btn__sub { font-size: 0.7rem; color: #4ade80; font-weight: 700; }
+#cashout-btn:hover:not(:disabled) { border-color: #4ade80; }
+/* Urgencia: el botón late cuando hay botín acumulado */
+#cashout-btn.cashout--urgent {
+  animation: zy-urgent 1.1s ease-in-out infinite;
+  border-color: #4ade80;
+}
+@keyframes zy-urgent {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 8px rgba(74,222,128,0); transform: scale(1.03); }
+}
+/* Mayor urgencia cuando el multiplicador es alto */
+#cashout-btn.cashout--hot {
+  animation: zy-hot 0.7s ease-in-out infinite;
+  border-color: #f87171;
+}
+#cashout-btn.cashout--hot .btn__sub { color: #fbbf24; }
+@keyframes zy-hot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.5); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 10px rgba(248,113,113,0); transform: scale(1.05); }
+}
+
+.zy-btn--sm { padding: 0.45rem 0.9rem; font-size: 0.75rem; }
+
+/* ---- Result ---- */
+.result-msg {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-right: 1rem;
+  animation: zy-result-in 0.5s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+}
+@keyframes zy-result-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.result-msg--win  { color: #4ade80; }
+.result-msg--lose { color: #f87171; }
+.result-msg--tie  { color: var(--gold-400); }
+
+/* ---- Confetti dorado del Gran Golpe ---- */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti span {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 14px;
+  background: var(--gold-400);
+  opacity: 0.9;
+  animation: zy-confetti linear forwards;
+}
+@keyframes zy-confetti {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ---- Screen-flash de bust ---- */
+.flash-bust {
+  position: fixed;
+  inset: 0;
+  z-index: 8900;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(248,113,113,0.55), transparent 60%);
+  opacity: 0;
+  animation: zy-flash-bust 0.7s ease-out forwards;
+}
+@keyframes zy-flash-bust {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- Screen-flash de Gran Golpe ---- */
+.flash-win {
+  position: fixed;
+  inset: 0;
+  z-index: 8900;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(201,169,97,0.6), transparent 65%);
+  opacity: 0;
+  animation: zy-flash-win 0.9s ease-out forwards;
+}
+@keyframes zy-flash-win {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- Accesibilidad: movimiento reducido ---- */
+@media (prefers-reduced-motion: reduce) {
+  .stage::before,
+  .stage::after,
+  .dust span,
+  .zy-btn--gold::before,
+  .box--active,
+  .box--opened.box--streak .box__dial-progress,
+  #cashout-btn.cashout--urgent,
+  #cashout-btn.cashout--hot {
+    animation: none !important;
+    transition: none !important;
+  }
+  .box, .zy-card, .toast, .controls__phase, .result-msg {
+    transition: none !important;
+  }
+}
+
+/* ============ MODAL ============ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: grid;
+  place-items: center;
+}
+.modal--hidden { display: none; }
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6,10,16,0.85);
+  backdrop-filter: blur(4px);
+}
+.modal__dialog {
+  position: relative;
+  background: linear-gradient(180deg, #1a2330, #0d141d);
+  border: 1px solid rgba(201,169,97,0.3);
+  width: min(560px, 92vw);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.modal__kicker {
+  display: block;
+  color: var(--gold-400);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.modal__title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+}
+.modal__close {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--ink-300);
+  width: 32px;
+  height: 32px;
+  font-size: 1.3rem;
+  line-height: 1;
+  transition: all 0.2s;
+}
+.modal__close:hover {
+  border-color: var(--gold-400);
+  color: var(--gold-400);
+}
+.modal__body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  color: var(--ink-200);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.rules-intro {
+  color: var(--ink-300);
+  margin-bottom: 1.25rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--gold-500);
+}
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.rules-list > li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+.rules-list__num {
+  width: 32px;
+  height: 32px;
+  background: rgba(201,169,97,0.12);
+  border: 1px solid var(--gold-500);
+  color: var(--gold-400);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.rules-list__sub {
+  margin-top: 0.4rem;
+  padding-left: 1rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.rules-list__sub li { color: var(--ink-300); }
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+.dot--win  { background: #4ade80; }
+.dot--lose { background: #f87171; }
+.dot--tie  { background: var(--gold-400); }
+
+.rules-table {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.rules-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.rules-table th {
+  background: rgba(201,169,97,0.1);
+  color: var(--gold-400);
+  padding: 0.6rem;
+  text-align: left;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.rules-table td {
+  padding: 0.55rem 0.6rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.rules-table td:nth-child(2) { color: var(--gold-400); font-weight: 700; }
+.rules-table td:nth-child(3) { color: #f87171; }
+
+.modal__foot {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ============ RESPONSIVE ============ */
+
+/* ---- Tablet / móvil vertical (retrato) ---- */
+@media (max-width: 760px) {
+  /* Topbar compacto */
+  .topbar { padding: 0.5rem 0.75rem; }
+  .topbar__brand { font-size: 0.7rem; letter-spacing: 0.2em; }
+  .topbar__brand svg { width: 18px; height: 18px; }
+  .topbar__center { display: none; }
+  .topbar__balance-value { font-size: 0.95rem; }
+  .topbar__balance-label { font-size: 0.5rem; }
+  .topbar__icon-btn { width: 30px; height: 30px; }
+  .topbar__right { gap: 0.5rem; }
+
+  /* Vault: una sola columna, panels colapsados */
+  .vault {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  /* Paneles: barras horizontales compactas */
+  .panel {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    overflow: hidden;
+  }
+  .panel__block { flex-shrink: 0; min-width: auto; }
+  .panel__label { font-size: 0.5rem; letter-spacing: 0.15em; }
+  .panel__big { font-size: 1.05rem; }
+  .panel__big span { font-size: 0.7rem; }
+  .panel__divider { display: none; }
+  /* Ocultar historial en móvil para ganar espacio */
+  .panel--right .panel__block:last-child { display: none; }
+
+  /* Bóveda central */
+  .vault__core { gap: 0.5rem; padding: 0.25rem; }
+  .vault__deco { opacity: 0.3; }
+  .vault__logo { font-size: 1.8rem; }
+
+  /* ---- Caja única en carrusel (retrato) ---- */
+  .vault__grid {
+    display: block;
+    position: relative;
+    width: 160px;
+    height: 160px;
+    max-width: none;
+  }
+  /* Todas las cajas: absolutas, ocultas a la derecha por defecto */
+  .box {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(120%) scale(0.85);
+    transition: transform 0.55s var(--ease-out-expo, ease),
+                opacity 0.45s ease;
+  }
+  /* Caja activa: centrada y visible */
+  .box--active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
+  }
+  /* Caja abriéndose: se queda centrada */
+  .box--opening {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  /* Caja revelando multiplicador: visible y centrada */
+  .box--revealing {
+    opacity: 1;
+    pointer-events: none;
+    transform: translateX(0) scale(1);
+  }
+  /* Caja abierta con éxito: desliza a la izquierda y se desvanece */
+  .box--opened {
+    opacity: 0;
+    transform: translateX(-120%) scale(0.85);
+  }
+  /* Caja explotada/busted: visible para mostrar el fracaso */
+  .box--busted,
+  .box--exploding {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  /* Cajas locked (futuras): ocultas a la derecha */
+  .box--locked {
+    opacity: 0;
+    transform: translateX(120%) scale(0.85);
+  }
+  /* Caja idle: visible y centrada durante la apuesta (antes de empezar) */
+  .box--idle {
+    opacity: 0.6;
+    pointer-events: none;
+    transform: translateX(0) scale(1);
+    border-color: rgba(201, 169, 97, 0.3);
+  }
+
+  /* Elementos de la caja más grandes (solo una visible) */
+  .box__dial { width: 52px; height: 52px; }
+  .box__dial-svg { width: 100%; height: 100%; }
+  .box__num { font-size: 0.6rem; }
+  .box__engrave { font-size: 0.4rem; bottom: 4px; }
+  .box__mult { font-size: 1.1rem; min-height: 1.2rem; }
+  .box__mult--low { font-size: 1.1rem; }
+  .box__mult--mid { font-size: 1.25rem; }
+  .box__mult--high { font-size: 1.4rem; }
+  .box__mult--mega { font-size: 1.6rem; }
+
+  /* Puerta de bóveda más pequeña */
+  .bank-door__ring { width: 240px; height: 240px; }
+  .bank-door__ring--2 { width: 180px; height: 180px; }
+  .bank-door__hub { width: 36px; height: 36px; }
+
+  /* Controles compactos */
+  .controls { padding: 0.5rem 0.6rem; min-height: 0; }
+  .controls__phase { gap: 0.5rem; }
+  .bet-controls { gap: 0.4rem; }
+  .bet-controls__label { font-size: 0.52rem; }
+  .bet-controls__display { margin-left: 0.4rem; }
+  .bet-controls__amount { font-size: 1rem; }
+  .chip { width: 38px; height: 38px; font-size: 0.72rem; border-width: 2px; }
+  .zy-btn { padding: 0.5rem 0.85rem; font-size: 0.75rem; }
+  .zy-btn--sm { padding: 0.35rem 0.6rem; font-size: 0.68rem; }
+  .zy-btn--lg { padding: 0.65rem 1.2rem; font-size: 0.85rem; }
+  .result-msg { font-size: 0.85rem; margin-right: 0.5rem; }
+  .toast { font-size: 0.62rem; padding: 0.4rem 0.9rem; top: 0.4rem; }
+}
+
+/* ---- Landscape bloqueado por rotate-lock.mjs ---- */

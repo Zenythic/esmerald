@@ -1,0 +1,54 @@
+/* ===== Zenythic — Bloqueo de landscape =====
+   Overlay que fuerza al usuario a girar el teléfono a vertical. */
+
+.zy-rotate-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: var(--ink-900, #0f0f12);
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+}
+.zy-rotate-lock.is-visible {
+  display: flex;
+}
+.zy-rotate-lock__icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  animation: zy-rotate-hint 2.5s ease-in-out infinite;
+}
+.zy-rotate-lock__icon svg {
+  width: 100%;
+  height: 100%;
+}
+@keyframes zy-rotate-hint {
+  0%, 100% { transform: rotate(0deg); }
+  40%, 60% { transform: rotate(-90deg); }
+}
+.zy-rotate-lock__title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-400, #c9a961);
+}
+.zy-rotate-lock__text {
+  font-size: 0.8rem;
+  color: var(--ink-400, #9a9aa6);
+  line-height: 1.5;
+  max-width: 240px;
+}
+
+/* Se muestra solo en landscape con poca altura (móvil) */
+@media (max-width: 920px) and (orientation: landscape) and (max-height: 540px) {
+  .zy-rotate-lock.is-visible {
+    display: flex;
+  }
+}

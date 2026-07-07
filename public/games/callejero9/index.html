@@ -12,6 +12,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../_shared/base.css" />
+    <link rel="stylesheet" href="../_shared/rotate-lock.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -41,8 +42,20 @@
         </div>
       </header>
 
+      <!-- ============ TICKER DE GANADORES ============ -->
+      <div class="ticker" aria-hidden="true">
+        <span class="ticker__label">● EN VIVO</span>
+        <div class="ticker__track">
+          <div class="ticker__content" id="ticker-content"></div>
+        </div>
+      </div>
+
       <!-- ============ MESA ============ -->
       <main class="felt">
+        <!-- Partículas doradas flotantes -->
+        <div class="felt__particles" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
         <!-- Detalle decorativo: logo de agua + línea dorada -->
         <div class="felt__deco" aria-hidden="true">
           <span class="felt__logo">ZENYTHIC</span>
@@ -244,5 +257,9 @@
     </div>
 
     <script type="module" src="./game.mjs"></script>
+    <script type="module">
+      import { initRotateLock } from '../_shared/rotate-lock.mjs';
+      initRotateLock();
+    </script>
   </body>
 </html>

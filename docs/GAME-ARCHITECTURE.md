@@ -11,6 +11,8 @@
 | 2026-07-06  | Creación del documento. Definición de layout estándar, motor RNG, splash y ciclo de vida | Zenythic  |
 | 2026-07-06  | Estado de `callejero9` → **Demo funcional**. Banca fija = Zenythic (no rota). Integrado en la landing como ruta `/games/callejero9/`. | Zenythic  |
 | 2026-07-06  | `callejero9` → **3 plazas jugables** sin bots (izq→der: P3·P1·P2). Placeholders de cartas antes de repartir. Fichas apiladas junto a los placeholders (ficha equipada + click en plaza). Acción por plaza con **foco dorado** sobre la plaza en turno (`.seat--spotlight`). Eliminada la apuesta de resultado 0–9. | Zenythic  |
+| 2026-07-06  | Estado de `heist` → **Demo funcional**. Juego tipo mines/crash con gancho narrativo (ladrón de bancos). 10 cajas, multiplicador hasta 100x, trampa de tinta, retirada voluntaria. Integrado en la landing como ruta `/games/heist/`. | Zenythic  |
+| 2026-07-06  | `heist` → **Multiplicador aleatorio por caja** (antes era fijo). Ahora cada caja oculta un valor dentro de un rango creciente (1.05–100x), sesgado a bajo con cola larga. El jugador solo ve el rango, no el valor. **Animación de dial**: el reloj de la caja se completa al abrirla; si va a fallar, explota en un punto aleatorio de la animación. | Zenythic  |
 
 ---
 
@@ -131,6 +133,7 @@ El jugador puede, en cualquier momento, **verificar** que el resultado no fue ma
 | Slug          | Estado          | Tipo               | Notas                                          |
 |---------------|-----------------|--------------------|------------------------------------------------|
 | `callejero9`  | Demo funcional  | Baccarat callejero | Banca fija = Zenythic. 3 plazas jugables (sin bots), placeholders de cartas, fichas apiladas, foco dorado sobre la plaza en turno de acción. Ruta `/games/callejero9/`. |
+| `heist`       | Demo funcional  | Mines / Crash      | 10 cajas fuertes, multiplicador hasta 100x, trampa de tinta (bust total), retirada voluntaria. RNG provably-fair. Ruta `/games/heist/`. |
 | _(próximos)_  | Planificado     | —                  |                                                |
 
 Cada juego tiene su propia fila cuando se empieza.

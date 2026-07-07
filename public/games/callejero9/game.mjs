@@ -65,7 +65,7 @@ const toast = $('#toast');
 
 // ---------- Wallet ----------
 wallet.onChange((bal) => {
-  balanceEl.textContent = `$${bal}`;
+  balanceEl.textContent = `$${bal.toFixed(2)}`;
 });
 
 // ---------- Render helpers ----------
@@ -105,7 +105,7 @@ function clearSeats() {
       continue;
     }
     restorePlaceholders(pos);
-    seatEls[pos].classList.remove('seat--winner', 'seat--spotlight');
+    seatEls[pos].classList.remove('seat--winner', 'seat--loser', 'seat--spotlight');
     seatEls[pos].querySelector('[data-result]').textContent = '';
     seatEls[pos].querySelector('[data-result]').className = 'seat__result';
   }
@@ -126,7 +126,7 @@ function clearCardsOnly() {
       ph.className = 'zy-card-placeholder';
       cardsWrap.appendChild(ph);
     }
-    seatEls[pos].classList.remove('seat--deal-ready', 'seat--winner', 'seat--spotlight');
+    seatEls[pos].classList.remove('seat--deal-ready', 'seat--winner', 'seat--loser', 'seat--spotlight');
     seatEls[pos].querySelector('[data-score]').textContent = '—';
     seatEls[pos].querySelector('[data-result]').textContent = '';
     seatEls[pos].querySelector('[data-result]').className = 'seat__result';
@@ -180,6 +180,54 @@ function showToast(msg, ms = 2000) {
   toast.textContent = msg;
   toast.classList.remove('toast--hidden');
   if (ms > 0) setTimeout(() => toast.classList.add('toast--hidden'), ms);
+}
+
+// ---------- Contador de saldo animado ----------
+let balanceAnimating = false;
+function animateBalance(from, to) {
+  if (balanceAnimating) return;
+  balanceAnimating = true;
+  const duration = 600;
+  const start = performance.now();
+  const diff = to - from;
+  function tick(now) {
+    const elapsed = now - start;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = from + diff * eased;
+    balanceEl.textContent = `$${val.toFixed(2)}`;
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      balanceEl.textContent = `$${to.toFixed(2)}`;
+      balanceAnimating = false;
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+// ---------- Screen-flash + confetti ----------
+function screenFlash(type) {
+  const flash = document.createElement('div');
+  flash.className = `flash-${type}`;
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1000);
+}
+function spawnConfetti(count = 50) {
+  const layer = document.createElement('div');
+  layer.className = 'confetti';
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('span');
+    c.style.left = `${Math.random() * 100}%`;
+    c.style.animationDuration = `${1.6 + Math.random() * 1.4}s`;
+    c.style.animationDelay = `${Math.random() * 0.5}s`;
+    c.style.background = Math.random() > 0.5 ? 'var(--gold-400)' : 'var(--gold-300)';
+    c.style.width = `${6 + Math.random() * 6}px`;
+    c.style.height = `${10 + Math.random() * 8}px`;
+    layer.appendChild(c);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 3200);
 }
 
 function showPhase(phase) {
@@ -404,6 +452,7 @@ async function resolveRound(bankHasNatural) {
 
   let totalStaked = 0;
   let totalReceived = 0;
+  const playerResults = [];
 
   for (const p of PLAYER_SEATS) {
     if (bets[p] <= 0) continue;
@@ -418,10 +467,31 @@ async function resolveRound(bankHasNatural) {
     const resEl = seatEls[p].querySelector('[data-result]');
     resEl.className = 'seat__result seat__result--' + outcome;
     resEl.textContent = outcome === 'win' ? 'Gana' : outcome === 'lose' ? 'Pierde' : 'Empate';
-    if (outcome === 'win') seatEls[p].classList.add('seat--winner');
+    if (outcome === 'win') {
+      seatEls[p].classList.add('seat--winner');
+    } else if (outcome === 'lose') {
+      seatEls[p].classList.add('seat--loser');
+    }
+
+    playerResults.push({
+      spot: PLAYER_SEATS.indexOf(p) + 1,
+      outcome,
+      payout: outcome === 'win' ? bets[p] : outcome === 'tie' ? bets[p] : bets[p],
+    });
   }
 
   wallet.credit(totalReceived);
+  pushPlayerResult(playerResults);
+
+  // Contador animado de saldo + flash
+  const prevBalance = wallet.balance - totalReceived;
+  animateBalance(prevBalance, wallet.balance);
+  if (net > 0) {
+    screenFlash('win');
+    if (totalReceived > totalStaked * 2) spawnConfetti();
+  } else if (net < 0) {
+    screenFlash('lose');
+  }
 
   const net = totalReceived - totalStaked;
   resultMsg.textContent =
@@ -469,8 +539,88 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !rulesModal.classList.contains('modal--hidden')) closeRules();
 });
 
+// ---------- Ticker de ganadores ----------
+const tickerContent = $('#ticker-content');
+const FAKE_NAMES = [
+  'LuckyAce', 'ChipMaster', 'GoldRing', 'NightPlayer', 'RedDragon',
+  'SilverFox', 'BlackSpade', 'HighRoller', 'CardShark', 'RoyalFlush',
+  'DiamondHand', 'WildCard', 'AceHigh', 'KingPin', 'QueenBee',
+  'JokerWild', 'ClubKing', 'HeartBreak', 'SmoothPlay', 'BigBetBob',
+];
+const FAKE_BETS = [5, 10, 25, 50, 100, 200];
+
+function genFakeWin() {
+  const name = FAKE_NAMES[Math.floor(Math.random() * FAKE_NAMES.length)];
+  const spot = 1 + Math.floor(Math.random() * 3);
+  const bet = FAKE_BETS[Math.floor(Math.random() * FAKE_BETS.length)];
+  const win = Math.random() < 0.55;
+  return { name, spot, bet, win, payout: win ? bet * 2 : bet };
+}
+
+function tickerItemHTML(w) {
+  if (w.win) {
+    return `<span class="ticker__item">
+      <span class="t-name">${w.name}</span>
+      <span class="t-spot">PLAZA ${w.spot}</span>
+      <span class="t-win">+$${w.payout}</span>
+    </span>`;
+  }
+  return `<span class="ticker__item">
+    <span class="t-name">${w.name}</span>
+    <span class="t-spot">PLAZA ${w.spot}</span>
+    <span class="t-lose">−$${w.payout}</span>
+  </span>`;
+}
+
+function buildTickerSeed(count = 14) {
+  const items = [];
+  for (let i = 0; i < count; i++) items.push(tickerItemHTML(genFakeWin()));
+  tickerContent.innerHTML = items.join('') + items.join('');
+}
+
+function pushPlayerResult(results) {
+  for (const r of results) {
+    const item = document.createElement('span');
+    item.className = 'ticker__item ticker__item--me';
+    if (r.outcome === 'win') {
+      item.innerHTML = `
+        <span class="t-name">TÚ</span>
+        <span class="t-spot">PLAZA ${r.spot}</span>
+        <span class="t-win">+$${r.payout}</span>
+      `;
+    } else if (r.outcome === 'tie') {
+      item.innerHTML = `
+        <span class="t-name">TÚ</span>
+        <span class="t-spot">PLAZA ${r.spot}</span>
+        <span class="t-win">= $${r.payout}</span>
+      `;
+    } else {
+      item.innerHTML = `
+        <span class="t-name">TÚ</span>
+        <span class="t-spot">PLAZA ${r.spot}</span>
+        <span class="t-lose">−$${r.payout}</span>
+      `;
+    }
+    tickerContent.insertBefore(item, tickerContent.firstChild);
+  }
+  while (tickerContent.children.length > 60) {
+    tickerContent.removeChild(tickerContent.lastChild);
+  }
+}
+
+setInterval(() => {
+  const item = document.createElement('span');
+  item.className = 'ticker__item';
+  item.innerHTML = tickerItemHTML(genFakeWin());
+  tickerContent.insertBefore(item, tickerContent.firstChild);
+  while (tickerContent.children.length > 60) {
+    tickerContent.removeChild(tickerContent.lastChild);
+  }
+}, 5000);
+
 // ---------- Init ----------
 (async function init() {
+  buildTickerSeed();
   await showSplash({ durationMs: 2200 });
   updateBetUI();
   showPhase(phaseBet);
