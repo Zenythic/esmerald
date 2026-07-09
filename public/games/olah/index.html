@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Olah · Zenythic</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../_shared/base.css" />
+    <link rel="stylesheet" href="../_shared/rotate-lock.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <!-- ============ TOP BAR (fuera del marco) ============ -->
+      <header class="topbar">
+        <a href="/" class="topbar__brand">
+          <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+            <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span>ZENYTHIC</span>
+        </a>
+        <div class="topbar__center">
+          <span class="topbar__title">OLAH</span>
+          <span class="topbar__subtitle">Remonta la ola</span>
+        </div>
+        <div class="topbar__right">
+          <button id="rules-btn" class="topbar__icon-btn" title="Cómo se juega" aria-label="Reglas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+          <div class="topbar__balance">
+            <span class="topbar__balance-label">Saldo</span>
+            <span id="balance" class="topbar__balance-value">$1000</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============ TICKER DE GANADORES (fuera del marco) ============ -->
+      <div class="ticker" aria-hidden="true">
+        <span class="ticker__label">● EN VIVO</span>
+        <div class="ticker__track">
+          <div class="ticker__content" id="ticker-content"></div>
+        </div>
+      </div>
+
+      <!-- ============ MARCO DORADO: solo el juego ============ -->
+      <div class="frame">
+        <div class="frame__inner">
+          <div class="stage" data-depth="normal">
+            <!-- Capas de fondo (side-scroller) -->
+            <div class="world" aria-hidden="true">
+              <!-- Fondo estático a tamaño completo -->
+              <div class="layer layer--bg"></div>
+              <!-- Una sola imagen de ola rodando de derecha a izquierda en bucle -->
+              <div class="layer layer--waves" id="layer-waves">
+                <div class="layer--waves-tile"></div>
+                <div class="layer--waves-tile"></div>
+              </div>
+            </div>
+
+            <!-- Barra de multiplicador (overlay izquierda, dentro del marco) -->
+            <aside class="mult-bar" aria-label="Multiplicador">
+              <span class="mult-bar__title">MULTIPLICADOR</span>
+              <div class="mult-bar__track">
+                <div class="mult-bar__fill" id="mult-fill"></div>
+                <div class="mult-bar__seg" data-mult="50"><span>50x</span></div>
+                <div class="mult-bar__seg" data-mult="40"><span>40x</span></div>
+                <div class="mult-bar__seg" data-mult="30"><span>30x</span></div>
+                <div class="mult-bar__seg" data-mult="25"><span>25x</span></div>
+                <div class="mult-bar__seg mult-bar__seg--thin"><span></span></div>
+                <div class="mult-bar__seg" data-mult="1"><span>1x</span></div>
+                <div class="mult-bar__plate" id="mult-plate">
+                  <span id="plate-mult">1.00x</span>
+                </div>
+              </div>
+              <div class="mult-bar__sparks" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </aside>
+
+            <!-- Escena del mar con el barco -->
+            <section class="ocean">
+              <div class="waterline" aria-hidden="true"></div>
+              <div class="wave-obstacle" id="wave-obstacle" aria-hidden="true">
+                <div class="wave-obstacle__crest"></div>
+              </div>
+              <img class="boat" id="boat" src="./barco.png" alt="Barco Fortuna" draggable="false" />
+              <div class="wave-info" id="wave-info">
+                <span class="wave-info__label">Ola actual</span>
+                <span class="wave-info__size" id="wave-info-size">—</span>
+              </div>
+              <div id="toast" class="toast toast--hidden"></div>
+            </section>
+          </div><!-- /.stage -->
+        </div><!-- /.frame__inner -->
+      </div><!-- /.frame -->
+
+      <!-- ============ PANEL DE ESTADO (fuera del marco) ============ -->
+      <aside class="statusbar">
+        <div class="panel__block">
+          <span class="panel__label">Multiplicador en vivo</span>
+          <span id="current-mult" class="panel__big panel__big--gold">1.00<span>x</span></span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block">
+          <span class="panel__label">Si te detienes ahora</span>
+          <span id="cashout-value" class="panel__big panel__big--green">$0</span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block">
+          <span class="panel__label">Olas coronadas</span>
+          <span id="crested-count" class="panel__big">0</span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block panel__block--history">
+          <span class="panel__label">Últimas travesías</span>
+          <ul id="history" class="history">
+            <li class="history__empty">Sin historial aún</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ============ CONTROLES (fuera del marco) ============ -->
+      <footer class="controls">
+        <!-- Fase de apuesta -->
+        <div id="phase-bet" class="controls__phase">
+          <div class="bet-controls">
+            <span class="bet-controls__label">Apuesta</span>
+            <div class="bet-controls__chips">
+              <button class="chip chip--5" data-chip="5">5</button>
+              <button class="chip chip--25" data-chip="25">25</button>
+              <button class="chip chip--100" data-chip="100">100</button>
+            </div>
+            <button class="zy-btn zy-btn--sm" id="bet-clear">Limpiar</button>
+            <div class="bet-controls__display">
+              <span class="bet-controls__display-label">Total</span>
+              <span id="bet-amount" class="bet-controls__amount">$0</span>
+            </div>
+          </div>
+          <button id="start-btn" class="zy-btn zy-btn--gold" disabled>Zarpar</button>
+        </div>
+
+        <!-- Fase de juego: detenerse -->
+        <div id="phase-play" class="controls__phase controls__phase--hidden">
+          <button class="zy-btn zy-btn--gold zy-btn--lg" id="stop-btn">
+            <span class="btn__label">Detener</span>
+            <span class="btn__sub" id="stop-value">$0</span>
+          </button>
+        </div>
+
+        <!-- Fase de resolución -->
+        <div id="phase-result" class="controls__phase controls__phase--hidden">
+          <div id="result-msg" class="result-msg"></div>
+          <button class="zy-btn zy-btn--dark" id="next-btn">Nueva travesía</button>
+        </div>
+      </footer>
+    </div><!-- /.layout -->
+
+    <!-- ============ MODAL DE REGLAS ============ -->
+    <div id="rules-modal" class="modal modal--hidden" aria-hidden="true">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+        <header class="modal__head">
+          <div>
+            <span class="modal__kicker">Cómo se juega</span>
+            <h2 id="rules-title" class="modal__title">Olah</h2>
+          </div>
+          <button class="modal__close" data-close aria-label="Cerrar">×</button>
+        </header>
+        <div class="modal__body">
+          <p class="rules-intro">
+            El barco <strong>FORTUNA</strong> surca un mar tropical al atardecer, avanzando
+            de izquierda a derecha. Una tras otra, las olas se alzan como obstáculos y el
+            barco las trepa en automático: cada ola coronada eleva tu multiplicador.
+            Detente a tiempo y cobra… antes de que una ola lo hunda.
+          </p>
+          <ol class="rules-list">
+            <li>
+              <span class="rules-list__num">1</span>
+              <div>
+                <strong>Apuesta y zarpa.</strong>
+                Coloca tu apuesta y pulsa <em>Zarpar</em>. El barco empieza a navegar hacia adelante.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">2</span>
+              <div>
+                <strong>Trepa las olas.</strong>
+                Cada ola tiene un tamaño aleatorio (pequeña, mediana, grande, enorme).
+                Las olas más grandes suben más rápido el multiplicador, pero también
+                llegan antes al punto de hundimiento.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">3</span>
+              <div>
+                <strong>El multiplicador sube en vivo.</strong>
+                Mientras el barco escala cada ola, el multiplicador crece de forma continua.
+                La barra de la izquierda marca tu nivel y la placa dorada muestra el valor exacto.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">4</span>
+              <div>
+                <strong>Detente cuando quieras.</strong>
+                Pulsa <em>Detener</em> en cualquier instante y cobras
+                <strong>apuesta × multiplicador en vivo</strong>. La codicia es el
+                verdadero enemigo.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">5</span>
+              <div>
+                <strong>Cuidado con el hundimiento.</strong>
+                Si el multiplicador alcanza el umbral de hundimiento de la ronda, la ola
+                rompe al barco y <strong>pierdes todo</strong>.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">6</span>
+              <div>
+                <strong>La gran ola.</strong>
+                Si llegas a <strong>50x</strong> sin hundirte, cobras el multiplicador máximo.
+              </div>
+            </li>
+          </ol>
+          <div class="rules-table">
+            <table>
+              <thead>
+                <tr><th>Ola</th><th>Salto de mult.</th><th>Probabilidad</th></tr>
+              </thead>
+              <tbody id="rules-table-body"></tbody>
+            </table>
+          </div>
+          <p class="rules-foot">
+            Provably-fair: el umbral de hundimiento de cada ronda se determina de forma
+            verificable a partir de la semilla del servidor, la semilla del cliente y el
+            nonce. RTP objetivo 95%.
+          </p>
+        </div>
+        <footer class="modal__foot">
+          <button class="zy-btn zy-btn--gold" data-close>Entendido</button>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="./game.mjs"></script>
+    <script type="module">
+      import { initRotateLock } from '../_shared/rotate-lock.mjs';
+      initRotateLock();
+    </script>
+  </body>
+</html>

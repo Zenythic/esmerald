@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trade · Zenythic</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../_shared/base.css" />
+    <link rel="stylesheet" href="../_shared/rotate-lock.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <!-- ============ TOP BAR (fuera del marco) ============ -->
+      <header class="topbar">
+        <a href="/" class="topbar__brand">
+          <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+            <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span>ZENYTHIC</span>
+        </a>
+        <div class="topbar__center">
+          <span class="topbar__title">TRADE</span>
+          <span class="topbar__subtitle">Arriba o abajo</span>
+        </div>
+        <div class="topbar__right">
+          <button id="rules-btn" class="topbar__icon-btn" title="Cómo se juega" aria-label="Reglas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+          <div class="topbar__balance">
+            <span class="topbar__balance-label">Saldo</span>
+            <span id="balance" class="topbar__balance-value">$1000</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============ TICKER DE GANADORES (fuera del marco) ============ -->
+      <div class="ticker" aria-hidden="true">
+        <span class="ticker__label">● EN VIVO</span>
+        <div class="ticker__track">
+          <div class="ticker__content" id="ticker-content"></div>
+        </div>
+      </div>
+
+      <!-- ============ STAGE: el juego a pantalla completa (sin marco) ============ -->
+      <div class="stage" data-state="idle">
+
+            <!-- HUD superior del gráfico -->
+            <div class="hud">
+              <div class="hud__group">
+                <span class="hud__label">Precio</span>
+                <span id="price" class="hud__value">100.00</span>
+              </div>
+              <div class="hud__group hud__group--center">
+                <span class="hud__label">Puntada</span>
+                <span id="tick-count" class="hud__value">0</span>
+              </div>
+              <div class="hud__group hud__group--right">
+                <span class="hud__label">Mult. línea</span>
+                <span id="candle-mult" class="hud__value">—</span>
+              </div>
+            </div>
+
+            <!-- Cuerpo del stage: gráfico (con eje Y) + panel lateral lado a lado -->
+            <div class="stage__body">
+
+            <!-- Gráfico de líneas (SVG) -->
+            <div class="chart" id="chart">
+              <!-- Contador superior derecho: apuesta realizada / saldo apostado -->
+              <div class="stake-pill" id="stake-pill" hidden>
+                <span class="stake-pill__label">EN JUEGO</span>
+                <span class="stake-pill__value" id="stake-pill-value">$0</span>
+              </div>
+              <svg id="chart-svg" preserveAspectRatio="none" viewBox="0 0 1000 600">
+                <!-- grilla de fondo -->
+                <g class="chart__grid" id="chart-grid"></g>
+                <!-- línea de precio actual -->
+                <line class="chart__price-line" id="price-line" x1="0" x2="1000" />
+                <!-- línea de referencia fija en el centro (precio de entrada) -->
+                <line class="chart__ref-line" id="ref-line" x1="0" x2="1000" />
+                <text class="chart__ref-label" id="ref-label" x="8"></text>
+                <!-- área bajo la línea (relleno degradado) -->
+                <defs>
+                  <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"  stop-color="#c9a961" stop-opacity="0.28"/>
+                    <stop offset="100%" stop-color="#c9a961" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon class="chart__area" id="chart-area" fill="url(#area-grad)" />
+                <!-- polilínea de precio -->
+                <polyline class="chart__line" id="chart-line" fill="none" />
+                <!-- segmento en vivo (último → precio actual) -->
+                <line class="chart__live-seg" id="live-seg" />
+                <!-- punto del precio actual -->
+                <circle class="chart__head" id="chart-head" r="5" />
+                <!-- flecha de la próxima puntada (preview) -->
+                <g id="next-preview"></g>
+              </svg>
+              <div class="chart__axis-y" id="axis-y"></div>
+            </div>
+
+            <!-- Botones de decisión ARRIBA/ABAJO + RETIRARSE (panel derecho, centrados respecto a la línea del medio) -->
+            <div class="decision-panel" id="decision-panel" aria-hidden="true">
+              <div class="decision-group">
+                <button id="up-btn" class="call-btn call-btn--up" aria-label="Arriba" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+                  </svg>
+                  <span class="call-btn__label">ARRIBA</span>
+                  <span class="call-btn__count" id="up-count"></span>
+                </button>
+                <button id="down-btn" class="call-btn call-btn--down" aria-label="Abajo" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+                  </svg>
+                  <span class="call-btn__label">ABAJO</span>
+                  <span class="call-btn__count" id="down-count"></span>
+                </button>
+              </div>
+              <div class="decision-spacer" aria-hidden="true"></div>
+              <button id="exit-btn" class="call-btn call-btn--exit" hidden>
+                <span class="call-btn__label">RETIRARSE</span>
+                <span class="call-btn__exit-value" id="exit-value">$0</span>
+              </button>
+            </div><!-- /.decision-panel -->
+
+            </div><!-- /.stage__body -->
+
+            <!-- Overlay sutil de pausa: eliminado (sin oscurecer el gráfico) -->
+
+          <!-- Toast -->
+          <div id="toast" class="toast toast--hidden"></div>
+        </div><!-- /.stage -->
+
+      <!-- ============ PANEL DE ESTADO (fuera del marco) ============ -->
+      <aside class="statusbar">
+        <div class="panel__block">
+          <span class="panel__label">Apuesta comprometida</span>
+          <span id="stake-value" class="panel__big panel__big--gold">$0</span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block">
+          <span class="panel__label">Si aciertas esta vela</span>
+          <span id="win-gain" class="panel__big panel__big--green">+$0</span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block">
+          <span class="panel__label">Si fallas esta vela</span>
+          <span id="loss-amount" class="panel__big panel__big--red">−$0</span>
+        </div>
+        <div class="panel__divider"></div>
+        <div class="panel__block panel__block--history">
+          <span class="panel__label">Últimas puntadas</span>
+          <ul id="history" class="history">
+            <li class="history__empty">Sin historial aún</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ============ CONTROLES (fuera del marco) ============ -->
+      <footer class="controls">
+        <!-- Fase de apuesta: elegir apuesta inicial -->
+        <div id="phase-bet" class="controls__phase">
+          <div class="bet-controls">
+            <span class="bet-controls__label">Apuesta</span>
+            <div class="bet-controls__chips">
+              <button class="chip chip--5" data-chip="5">5</button>
+              <button class="chip chip--25" data-chip="25">25</button>
+              <button class="chip chip--100" data-chip="100">100</button>
+            </div>
+            <button class="zy-btn zy-btn--sm" id="bet-clear">Limpiar</button>
+            <div class="bet-controls__display">
+              <span class="bet-controls__display-label">Total</span>
+              <span id="bet-amount" class="bet-controls__amount">$0</span>
+            </div>
+          </div>
+          <button id="start-btn" class="zy-btn zy-btn--gold" disabled>Entrar al mercado</button>
+          <button id="bet-cancel" class="zy-btn zy-btn--sm">Cancelar</button>
+        </div>
+
+        <!-- Fase de juego: solo feedback (los botones ARRIBA/ABAJO/SALIR viven en el stage) -->
+        <div id="phase-play" class="controls__phase controls__phase--hidden">
+          <div id="result-msg" class="result-msg result-msg--idle">Elige ARRIBA o ABAJO en el panel derecho</div>
+        </div>
+
+        <!-- Fase de resolución: resultado de la última puntada -->
+        <div id="phase-resolve" class="controls__phase controls__phase--hidden">
+          <div id="result-msg-resolve" class="result-msg"></div>
+        </div>
+
+        <!-- Fase final: se acabó (saldo insuficiente o salida) -->
+        <div id="phase-end" class="controls__phase controls__phase--hidden">
+          <div id="end-msg" class="result-msg"></div>
+          <button class="zy-btn zy-btn--gold" id="restart-btn">Nueva sesión</button>
+        </div>
+      </footer>
+    </div><!-- /.layout -->
+
+    <!-- ============ MODAL DE REGLAS ============ -->
+    <div id="rules-modal" class="modal modal--hidden" aria-hidden="true">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+        <header class="modal__head">
+          <div>
+            <span class="modal__kicker">Cómo se juega</span>
+            <h2 id="rules-title" class="modal__title">Trade</h2>
+          </div>
+          <button class="modal__close" data-close aria-label="Cerrar">×</button>
+        </header>
+        <div class="modal__body">
+          <p class="rules-intro">
+            Un gráfico de líneas sube y baja puntada a puntada. Cada cierto tiempo el
+            mercado entra en <strong>pausa</strong> y tienes <strong>5 segundos</strong>
+            para decidir si la próxima puntada irá <strong>arriba</strong> o
+            <strong>abajo</strong>. Aciertas: ganas la ganancia neta de esa puntada.
+            Fallas: pierdes solo la <strong>mitad</strong> de esa ganancia y el
+            juego continúa. En cualquier pausa puedes <strong>Salir</strong> con
+            tu saldo.
+          </p>
+          <ol class="rules-list">
+            <li>
+              <span class="rules-list__num">1</span>
+              <div>
+                <strong>Elige tu apuesta y entra al mercado.</strong>
+                El dinero se compromete y deja de estar disponible: ya no puedes
+                recuperarlo directamente, solo a punta de aciertos.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">2</span>
+              <div>
+                <strong>El mercado avanza.</strong>
+                El gráfico dibuja una línea que sube y bajpuntada a puntada.
+                En cada pausa verás cuánto puede moverse la próxima línea y el
+                multiplicador asociado.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">3</span>
+              <div>
+                <strong>Tienes 5 segundos para decidir.</strong>
+                Pulsa <em>ARRIBA</em> o <em>ABAJO</em> antes de que el contador
+                llegue a cero. Si no eliges, la dirección por defecto es
+                <em>ARRIBA</em>.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">4</span>
+              <div>
+                <strong>Acertaste.</strong>
+                Cobras la <strong>ganancia neta</strong> de la puntada
+                (<em>apuesta × (multiplicador − 1)</em>). Ese dinero se acumula
+                en tu saldo libre y el mercado sigue.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">5</span>
+              <div>
+                <strong>Fallaste.</strong>
+                Pierdes solo la <strong>mitad</strong> de la ganancia neta que
+                hubieras conseguido. El juego continúa —no es el final— mientras
+                tu saldo alcance para seguir.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">6</span>
+              <div>
+                <strong>Sal cuando quieras…</strong>
+                En cada pausa puedes pulsar <em>Salir</em> y llevarte todo el
+                saldo acumulado. La codicia es el verdadero enemigo.
+              </div>
+            </li>
+            <li>
+              <span class="rules-list__num">7</span>
+              <div>
+                <strong>Si el saldo no alcanza, se acaba.</strong>
+                Si tras una puntada tu saldo cae por debajo de la apuesta
+                comprometida, no puedes seguir y pierdes la apuesta inicial.
+              </div>
+            </li>
+          </ol>
+          <div class="rules-table">
+            <table>
+              <thead>
+                <tr><th>Multiplicador</th><th>Ganas (neto)</th><th>Pierdes (neto)</th><th>Prob. acierto</th></tr>
+              </thead>
+              <tbody id="rules-table-body"></tbody>
+            </table>
+          </div>
+          <p class="rules-foot">
+            Provably-fair: el tamaño y la dirección de cada puntada se determinan
+            de forma verificable a partir de la semilla del servidor, la semilla
+            del cliente y el nonce. RTP objetivo 94% (edge de la casa 6%) cerrado
+            sesgando la probabilidad de acierto por puntada, no degradando el
+            multiplicador.
+          </p>
+        </div>
+        <footer class="modal__foot">
+          <button class="zy-btn zy-btn--gold" data-close>Entendido</button>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="./game.mjs"></script>
+    <script type="module">
+      import { initRotateLock } from '../_shared/rotate-lock.mjs';
+      initRotateLock();
+    </script>
+  </body>
+</html>
