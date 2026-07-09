@@ -542,7 +542,7 @@ document.addEventListener('keydown', (e) => {
 // ---------- Ticker de ganadores ----------
 const tickerContent = $('#ticker-content');
 const FAKE_NAMES = [
-  'LuckyAce', 'ChipMaster', 'GoldRing', 'NightPlayer', 'RedDragon',
+  'HappyHellyAce', 'ChipMaster', 'GoldRing', 'NightPlayer', 'RedDragon',
   'SilverFox', 'BlackSpade', 'HighRoller', 'CardShark', 'RoyalFlush',
   'DiamondHand', 'WildCard', 'AceHigh', 'KingPin', 'QueenBee',
   'JokerWild', 'ClubKing', 'HeartBreak', 'SmoothPlay', 'BigBetBob',

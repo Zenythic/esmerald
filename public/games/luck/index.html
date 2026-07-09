@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luck - Zenythic</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../_shared/base.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="luck-shell">
+      <header class="topbar">
+        <a href="/" class="topbar__brand">
+          <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true">
+            <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span>ZENYTHIC</span>
+        </a>
+        <div class="topbar__center">
+          <span class="topbar__title">LUCK</span>
+          <span class="topbar__subtitle">Slot deluxe</span>
+        </div>
+        <div class="topbar__right">
+          <button id="top-help-btn" class="topbar__icon-btn" title="Como se juega" aria-label="Reglas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+          <div class="topbar__balance">
+            <span class="topbar__balance-label">Saldo</span>
+            <span id="balance" class="topbar__balance-value">$1000</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="ticker" aria-hidden="true">
+        <span class="ticker__label">EN VIVO</span>
+        <div class="ticker__track">
+          <div class="ticker__content" id="ticker-content"></div>
+        </div>
+      </div>
+
+      <main class="luck-stage" aria-label="Luck">
+      <div class="luck-viewport" id="luck-viewport">
+        <section class="luck-scene" id="luck-scene" aria-label="Lucky Deluxe">
+          <img
+            class="scene-layer scene-layer--1"
+            src="./assets/scenes/capa1_fondo.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="scene-layer scene-layer--2"
+            src="./assets/scenes/capa2_multiplicadores.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="scene-layer scene-layer--3-bg"
+            src="./assets/scenes/capa3_fondo.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="scene-layer scene-layer--3"
+            src="./assets/scenes/capa3_maquina.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <div class="reels-layer" id="reels-layer" aria-hidden="true"></div>
+          <svg
+            class="payline-layer"
+            id="payline-layer"
+            viewBox="0 0 1246 701"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          ></svg>
+          <div class="scene-layer scene-layer--4" aria-hidden="true">
+            <img
+              class="character character--idle"
+              src="./assets/scenes/laia_idle.webp"
+              alt=""
+            />
+          </div>
+          <img
+            class="scene-layer scene-layer--5"
+            src="./assets/scenes/capa5_botonesInferiores.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="scene-layer scene-layer--6"
+            src="./assets/scenes/capa6_iconoPJ.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            class="scene-layer scene-layer--7"
+            src="./assets/scenes/capa7_BotonesARRIBADERECHA.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <div class="ui-layer" id="ui-layer">
+            <output
+              class="ui-field jackpot-value jackpot-value--grand"
+              id="grand-prize"
+              data-area="grandPrize"
+              aria-label="Premio Grand"
+            >0$</output>
+            <output
+              class="ui-field jackpot-value jackpot-value--major"
+              id="major-prize"
+              data-area="majorPrize"
+              aria-label="Premio Major"
+            >0$</output>
+            <output
+              class="ui-field jackpot-value jackpot-value--minor"
+              id="minor-prize"
+              data-area="minorPrize"
+              aria-label="Premio Minor"
+            >0$</output>
+            <output
+              class="ui-field amount-value amount-value--bet"
+              id="bet-display"
+              data-area="betDisplay"
+              aria-label="Apuesta"
+            >0$</output>
+            <button
+              class="hit-area hit-area--bet-down"
+              id="bet-down"
+              data-area="betDown"
+              type="button"
+              aria-label="Bajar apuesta"
+            ></button>
+            <button
+              class="hit-area hit-area--bet-up"
+              id="bet-up"
+              data-area="betUp"
+              type="button"
+              aria-label="Subir apuesta"
+            ></button>
+            <button
+              class="hit-area hit-area--auto"
+              id="auto-spin-btn"
+              data-area="autoSpinButton"
+              type="button"
+              aria-label="Giros automaticos"
+            ></button>
+            <output
+              class="ui-field amount-value amount-value--win"
+              id="win-display"
+              data-area="winDisplay"
+              aria-label="Ganancia"
+            >0$</output>
+            <button
+              class="hit-area hit-area--spin"
+              id="spin-btn"
+              data-area="spinButton"
+              type="button"
+              aria-label="Spin"
+            ></button>
+            <button
+              class="hit-area hit-area--help"
+              id="help-btn"
+              data-area="helpButton"
+              type="button"
+              aria-label="Ayuda"
+            ></button>
+            <button
+              class="hit-area hit-area--music"
+              id="music-btn"
+              data-area="musicButton"
+              type="button"
+              aria-label="Activar musica"
+              aria-pressed="false"
+            ></button>
+          </div>
+          <div class="bonus-hud bonus-hud--hidden" id="bonus-hud" aria-live="polite">
+            <span class="bonus-hud__label">BONUS</span>
+            <strong id="bonus-spins-left">0</strong>
+            <span class="bonus-hud__text">giros gratis</span>
+          </div>
+        </section>
+      </div>
+      </main>
+      <div id="toast" class="toast toast--hidden" role="status" aria-live="polite"></div>
+    </div>
+
+    <div id="pc-lock" class="pc-lock" aria-hidden="true">
+      <div class="pc-lock__mark">
+        <svg viewBox="0 0 48 48" width="46" height="46" aria-hidden="true">
+          <path d="M10 12 H38 L14 36 H38" fill="none" stroke="#C9A961" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+      <div>
+        <div class="pc-lock__title">Disponible en PC</div>
+        <p class="pc-lock__text">Luck necesita pantalla amplia por ahora. En movil lo dejamos bloqueado hasta adaptar la version tactil.</p>
+      </div>
+    </div>
+
+    <div class="game-modal game-modal--hidden" id="auto-modal" aria-hidden="true">
+      <div class="game-modal__backdrop" data-close-modal></div>
+      <section class="game-modal__panel game-modal__panel--small" role="dialog" aria-modal="true" aria-labelledby="auto-title">
+        <header class="game-modal__header">
+          <div>
+            <span class="game-modal__kicker">Auto play</span>
+            <h2 id="auto-title">Giros automaticos</h2>
+          </div>
+          <button class="game-modal__close" type="button" data-close-modal aria-label="Cerrar">x</button>
+        </header>
+        <div class="auto-summary">
+          <span class="auto-summary__label">Apuesta por giro</span>
+          <strong id="auto-bet-preview">0$</strong>
+        </div>
+        <div class="auto-options">
+          <button class="modal-choice" type="button" data-autospins="10">
+            <span>10</span>
+            <small>corto</small>
+          </button>
+          <button class="modal-choice" type="button" data-autospins="25">
+            <span>25</span>
+            <small>medio</small>
+          </button>
+          <button class="modal-choice" type="button" data-autospins="50">
+            <span>50</span>
+            <small>largo</small>
+          </button>
+        </div>
+        <button class="modal-stop" id="stop-auto-btn" type="button">Detener giros</button>
+      </section>
+    </div>
+
+    <div class="game-modal game-modal--hidden" id="help-modal" aria-hidden="true">
+      <div class="game-modal__backdrop" data-close-modal></div>
+      <section class="game-modal__panel" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <header class="game-modal__header">
+          <div>
+            <span class="game-modal__kicker">Como se juega</span>
+            <h2 id="help-title">Luck</h2>
+          </div>
+          <button class="game-modal__close" type="button" data-close-modal aria-label="Cerrar">x</button>
+        </header>
+        <div class="game-modal__body">
+          <p class="rules-intro">
+            Tragaperras de 5 reels y 3 filas con 20 lineas fijas. Cada giro descuenta tu apuesta del saldo y paga las combinaciones ganadoras al terminar.
+          </p>
+          <ol class="rules-list">
+            <li>
+              <span class="rules-list__num">1</span>
+              <div><strong>Elige apuesta.</strong> Usa los botones menos y mas de la maquina. No puedes apostar mas de tu saldo disponible.</div>
+            </li>
+            <li>
+              <span class="rules-list__num">2</span>
+              <div><strong>Gira.</strong> Las 20 lineas pagan de izquierda a derecha desde el primer reel con 3, 4 o 5 simbolos consecutivos.</div>
+            </li>
+            <li>
+              <span class="rules-list__num">3</span>
+              <div><strong>Wild.</strong> Sustituye simbolos normales. Si aparece, el siguiente reel entra con suspenso; si conecta mas Wilds, el ritmo sube.</div>
+            </li>
+            <li>
+              <span class="rules-list__num">4</span>
+              <div><strong>Jackpots.</strong> Minor es apuesta x20, Major es apuesta x100 y Grand es apuesta x1000. Se muestran arriba de la maquina.</div>
+            </li>
+            <li>
+              <span class="rules-list__num">5</span>
+              <div><strong>Bonus.</strong> 4 Wilds activan 8 giros gratis. En bonus aparecen multiplicadores de Laia que sustituyen simbolos y multiplican las lineas ganadoras que los atraviesan.</div>
+            </li>
+          </ol>
+          <div class="jackpot-rules">
+            <div><span>Minor</span><strong>x20</strong></div>
+            <div><span>Major</span><strong>x100</strong></div>
+            <div><span>Grand</span><strong>x1000</strong></div>
+          </div>
+          <div class="rules-table">
+            <table>
+              <thead>
+                <tr><th>Simbolo</th><th>3</th><th>4</th><th>5</th></tr>
+              </thead>
+              <tbody id="rules-paytable-body"></tbody>
+            </table>
+          </div>
+          <p class="rules-foot">Los simbolos bonus con Laia solo aparecen durante giros gratis. Si salen 4 Wilds dentro del bonus, se agregan 3 giros extra.</p>
+        </div>
+        <footer class="game-modal__foot">
+          <button class="zy-btn zy-btn--gold" type="button" data-close-modal>Entendido</button>
+        </footer>
+      </section>
+    </div>
+
+    <script type="module" src="./game.mjs"></script>
+  </body>
+</html>

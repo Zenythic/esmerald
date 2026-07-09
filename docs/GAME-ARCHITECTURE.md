@@ -8,6 +8,7 @@
 
 | Fecha       | Cambio                                                                                  | Autor     |
 |-------------|-----------------------------------------------------------------------------------------|-----------|
+| 2026-07-09  | Estado de `HappyHell` → **Ensamblaje visual inicial**. Tragaperras con escena fija 1246x701 armada por capas desde `assets/scenes`, splash Zenythic, `rules.mjs` puro para contrato visual y tarjeta integrada en la landing como ruta `/games/luck/`. | Zenythic  |
 | 2026-07-06  | Creación del documento. Definición de layout estándar, motor RNG, splash y ciclo de vida | Zenythic  |
 | 2026-07-06  | Estado de `callejero9` → **Demo funcional**. Banca fija = Zenythic (no rota). Integrado en la landing como ruta `/games/callejero9/`. | Zenythic  |
 | 2026-07-06  | `callejero9` → **3 plazas jugables** sin bots (izq→der: P3·P1·P2). Placeholders de cartas antes de repartir. Fichas apiladas junto a los placeholders (ficha equipada + click en plaza). Acción por plaza con **foco dorado** sobre la plaza en turno (`.seat--spotlight`). Eliminada la apuesta de resultado 0–9. | Zenythic  |
@@ -138,6 +139,7 @@ El jugador puede, en cualquier momento, **verificar** que el resultado no fue ma
 | `heist`       | Demo funcional  | Mines / Crash      | 10 cajas fuertes, multiplicador hasta 100x, trampa de tinta (bust total), retirada voluntaria. RNG provably-fair. Ruta `/games/heist/`. |
 | `olah`        | Demo funcional  | Crash              | Barco "FORTUNA" remonta olas de tamaño aleatorio; multiplicador continuo; detención voluntaria; hundimiento provably-fair por umbral de crash `C=clamp(RTP/u,1,50)`. RTP 95%, tope 50x. Placeholders CSS/SVG (sprites pendientes). Ruta `/games/olah/`. |
 | `trade`       | Demo funcional  | Predicción / Trading | Gráfico de líneas que sube y baja puntada a puntada; pausa de 5s para decidir arriba/abajo; acertar paga ganancia neta `stake·(m−1)` (m según distancia), fallar pierde solo la mitad y se continúa. Sesión continua con stake comprometido y salida voluntaria. RTP 94% por sesgo de probabilidad de acierto `p(m)=(1−0.12/(m−1))/3`. MIN_MULT 1.20 / MAX_MULT 3.00. Ruta `/games/trade/`. |
+| `HappyHell`        | Ensamblaje visual inicial | Slots / Tragaperras | Escena fija 1246x701 armada con capas `capa1`, `capa2`, `capa3`, `capa5`, `capa6`, `capa7`; capa 4 reservada para personaje. Splash Zenythic y tarjeta de landing. Ruta `/games/luck/`. |
 | _(próximos)_  | Planificado     | —                  |                                                |
 
 Cada juego tiene su propia fila cuando se empieza.
